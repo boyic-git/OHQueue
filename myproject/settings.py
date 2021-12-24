@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'ohq',
+    'ohq.apps.OhqConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
