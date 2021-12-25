@@ -65,6 +65,7 @@ class Course(models.Model):
     instructor = models.ManyToManyField(Instructor)
     teaching_assistant = models.ManyToManyField(TA, blank=True)
     student = models.ManyToManyField(Student, blank=True)
+    status = models.BooleanField(default=False)
 
     def __str__(self):
         if self.course_name:
