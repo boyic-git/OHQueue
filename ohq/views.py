@@ -9,15 +9,19 @@ from django.contrib.auth import login, logout, authenticate
 
 # Create your views here.
 class CourseListView(generic.ListView):
+    model = Course
     template_name = "course_list.html"
     context_object_name = "course_list"
 
-    def get_queryset(self):
-        courses = Course.objects.all()
-        return courses
-
+    # def get_queryset(self):
+    #     courses = Course.objects.all()
+    #     return courses
 
 def search(request):
     template = "ohq/search.html"
 
     return render(request, template)
+
+class CourseQueueView(generic.DetailView):
+    model = Course
+    template_name = "ohq/course_queue.html"

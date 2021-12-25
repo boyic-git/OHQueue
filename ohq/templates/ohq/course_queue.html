@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>OHQueue</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-primary">
+        <a class="navbar-brand" href="/">OHQueue</a>
+        <form class="form-inline" action="{% url 'ohq:search' %}" method="post">
+            {% csrf_token %}
+            <input class="form-control mr-sm-2" type="search" placeholder="Course e.g. CPEN502">
+            <button class="btn btn-success my-2 my-sm-2" type="submit">Search</button>
+        </form>
+    </nav>
+    <div class="container-fluid mt-2">
+        <h2>{{ course.code }}: {{ course.course_name }}</h2>
+    </div>
+</body>
