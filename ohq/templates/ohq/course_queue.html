@@ -18,5 +18,109 @@
     </nav>
     <div class="container-fluid mt-2">
         <h2>{{ course.code }}: {{ course.course_name }}</h2>
+        <div class="row gx-5">
+            <div class="col-8">
+
+                <!-- Current student -->
+                <div class="container p-3 border bg-light">
+                    <h4>Current student(s) in office hour</h2>
+                    <button type="button" class="btn btn-primary">Next Student</button>
+                    <button type="button" class="btn btn-secondary" disabled>Put Back Selected Student</button>
+                    <table class="table table-striped mt-2">
+                        <thead>
+                        <tr>
+                            <th style="width: 10%">Select</th>
+                            <th style="width: 20%">Name</th>
+                            <th style="width: 70%">Question</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                </div>
+                            </td>
+                            <td>Doe</td>
+                            <td>john@example.com</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                </div>
+                            </td>
+                            <td>Moe</td>
+                            <td>mary@example.com</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                </div>
+                            </td>
+                            <td>Dooley</td>
+                            <td>july@example.com</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Students in queue -->
+                <div class="container p-3 border bg-light">
+                    <h4>Students in queue</h2>
+                    <button type="button" class="btn btn-primary">Invite Selected Students</button> 
+                    <table class="table table-striped mt-2">
+                        <thead>
+                        <tr>
+                            <th style="width: 10%">Select</th>
+                            <th style="width: 20%">Name</th>
+                            <th style="width: 70%">Question</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                </div>
+                            </td>
+                            <td>Doe</td>
+                            <td>john@example.com</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                </div>
+                            </td>
+                            <td>Moe</td>
+                            <td>mary@example.com</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                </div>
+                            </td>
+                            <td>Dooley</td>
+                            <td>july@example.com</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="container p-3 border bg-light">
+                    <!-- Toggle the queue on/off -->
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                        <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
     </div>
 </body>

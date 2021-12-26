@@ -41,10 +41,8 @@
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">
-                            
-                            <button type="button" class="btn btn-primary float-right">
-                                Button
-                            </button>
+                            <input type=button class="btn btn-primary float-right" onClick="location.href='course/{{ course.id }}'"
+                                    value='Join'>
                         </h5>
                         <p>
                             {% if course.status %}
