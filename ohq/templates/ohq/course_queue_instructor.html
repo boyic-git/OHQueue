@@ -17,13 +17,26 @@
         </form>
     </nav>
     <div class="container-fluid mt-2">
-        <h2>{{ course.code }}: {{ course.course_name }}</h2>
+        <h2>
+            {{ course.code }}: {{ course.course_name }}
+            {% if course.status %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" 
+                    class="bi bi-circle-fill" viewBox="0 0 16 16" style="fill:#28a745">
+                    <circle cx="8" cy="8" r="8"></circle>
+                </svg>
+            {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" 
+                    class="bi bi-circle-fill" viewBox="0 0 16 16" style="fill:#dc3545">
+                    <circle cx="8" cy="8" r="8"></circle>
+                </svg>
+            {% endif %}
+        </h2>
         <div class="row gx-5">
             <div class="col-8">
-
                 <!-- Current student -->
+                {% if course.status %}
                 <div class="container p-3 border bg-light">
-                    <h4>Current student(s) in office hour</h2>
+                    <h4>Current student(s) in office hour</h4>
                     <button type="button" class="btn btn-primary">Next Student</button>
                     <button type="button" class="btn btn-secondary" disabled>Put Back Selected Student</button>
                     <table class="table table-striped mt-2">
@@ -68,7 +81,7 @@
 
                 <!-- Students in queue -->
                 <div class="container p-3 border bg-light">
-                    <h4>Students in queue</h2>
+                    <h4>Students in queue</h4>
                     <button type="button" class="btn btn-primary">Invite Selected Students</button> 
                     <table class="table table-striped mt-2">
                         <thead>
@@ -109,6 +122,14 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Office hour is off -->
+                {% else %}
+                <div class="container p-3 border bg-light">
+                    <h4>You are yet to start the office hour queue!</h4>
+                    <p>Toggle the switch on the right to start office hour.</p>
+                </div>
+                {% endif %}
             </div>
             <div class="col-4">
                 <div class="container p-3 border bg-light">

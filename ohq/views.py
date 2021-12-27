@@ -24,7 +24,7 @@ def search(request):
 
 class CourseQueueView(generic.DetailView):
     model = Course
-    template_name = "ohq/course_queue.html"
+    template_name = "ohq/course_queue_instructor.html"
 
 # Different views for different user types
 # https://stackoverflow.com/questions/54158999/django-show-different-content-based-on-user

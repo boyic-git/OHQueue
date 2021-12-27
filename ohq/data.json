@@ -1,0 +1,39 @@
+[
+    { "model": "auth.user",
+        "fields": {
+            "username": "admin",
+            "password": "pbkdf2_sha256$260000$NFs6BmnNGRSX0sWih439E5$qIi4ZhNqEqnciCznI8iRu5Kf776nMKusy/5g4c6TSoI=",
+            "is_superuser": true,
+            "is_staff": true,
+            "is_active": true
+        }
+    },
+    { "model": "ohq.course",
+        "fields": {
+            "code": "CPEN211",
+            "course_name": "Introduction to Microcomputers",
+            "status": true
+        }
+    },
+    { "model": "ohq.course",
+        "fields": {
+            "code": "CPEN212",
+            "course_name": "Computing Systems II",
+            "status": true
+        }
+    },
+    { "model": "ohq.course",
+        "fields": {
+            "code": "CPEN321",
+            "course_name": "Software Engineering",
+            "status": false
+        }
+    },
+    { "model": "ohq.course",
+        "fields": {
+            "code": "CPEN502",
+            "course_name": "Architecture for Learning Systems",
+            "status": false
+        }
+    }
+]
