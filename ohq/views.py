@@ -32,7 +32,6 @@ def check_is_instructor(user, course):
             is_instructor = True
     return is_instructor
 
-
 class CourseQueueView(generic.DetailView):
     model = Course
     template_name = "ohq/course_queue.html"
@@ -41,9 +40,17 @@ class CourseQueueView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         course = get_object_or_404(Course, pk=self.kwargs["pk"])
         context["is_instructor"] = check_is_instructor(self.request.user, course)
-        print(context)
+        # print(context)
         return context
 
+def change_queue_status(request, pk):
+    if request.method == "POST":
+        course = get_object_or_404(Course, pk=pk)
+        is_instructor = check_is_instructor(request.user, course)
+        if is_instructor:
+            course.status = not course.status
+            course.save()
+    return redirect(request.META['HTTP_REFERER'])
 # Different views for different user types
 # https://stackoverflow.com/questions/54158999/django-show-different-content-based-on-user
 

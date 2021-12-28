@@ -182,17 +182,26 @@
             <div class="col-4">
                 <div class="container p-3 border bg-light">
                     <!-- Toggle the queue on/off -->
+                    <h4>
+                      Office Hour Queue Status:
+                    </h4>
+                    
                     {% if course.status %}
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" checked>
-                      <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
-                    </div>
-
+                    <form action="{{ course.id }}/change_status" method="post">
+                      {% csrf_token %}
+                      <div class="btn-group" role="group">
+                        <button class="btn btn-primary" type="submit" disabled>On</button>
+                        <button class="btn btn-primary" type="submit">Off</button>
+                      </div>
+                    </form>
                     {% else %}
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-                      <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
-                    </div>
+                    <form action="{{ course.id }}/change_status" method="post">
+                      {% csrf_token %}
+                      <div class="btn-group" role="group">
+                        <button class="btn btn-primary" type="submit">On</button>
+                        <button class="btn btn-primary" type="submit" disabled>Off</button>
+                      </div>
+                    </form>
                     {% endif %}
 
                 </div>
@@ -203,3 +212,17 @@
         </div>
     </div>
 </body>
+
+<script>
+  function fonctionTest(){
+    if (document.getElementById('ohq_status').checked) 
+    {
+        alert("Checked");
+        document.getElementById('ohq_status').submit();
+        window.location.reload();
+    } else {
+        alert("Not Checked");
+        window.location.reload();
+    }
+  }   
+</script>
