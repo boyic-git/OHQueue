@@ -12,5 +12,6 @@ urlpatterns = [
     path("logout", views.logout_request, name="logout"),
     path("login", views.login_request, name="login"),
     path("course/<int:pk>/change_status", views.change_queue_status, name="change_status"),
+    path("course/<int:pk>/meeting_link", views.set_meeting_link, name="set_meeting_link"),
     
     ]

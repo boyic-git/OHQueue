@@ -52,6 +52,16 @@ def change_queue_status(request, pk):
             course.save()
     return redirect(request.META['HTTP_REFERER'])
 
+def set_meeting_link(request, pk):
+    if request.method == "POST":
+        course = get_object_or_404(Course, pk=pk)
+        is_instructor = check_is_instructor(request.user, course)
+        meeting_link = request.POST["meeting_link"]
+        if is_instructor:
+            course.meeting_link = meeting_link
+            course.save()
+    return redirect(request.META['HTTP_REFERER'])
+
 
 def login_request(request):
     context = {}

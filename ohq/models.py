@@ -33,6 +33,7 @@ class Course(models.Model):
         default=W1)
     course_name = models.CharField(max_length=100, default="")
     status = models.BooleanField(default=False)
+    meeting_link = models.URLField(default="")
 
     def __str__(self):
         if self.course_name:

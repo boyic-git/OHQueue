@@ -194,6 +194,23 @@
                         <button class="btn btn-primary" type="submit">Off</button>
                       </div>
                     </form>
+
+                    <div class="mt-2">
+                      <form action="{{ course.id }}/meeting_link" method="post">
+                        {% csrf_token %}
+                        <label for="meeting_link">Meeting Link: (ignore if you have already told students where the office hour is holding)
+                        </label>
+                        {% if course.meeting_link %}
+                        <textarea class="form-control" type="url" id="meeting_link" name="meeting_link" rows="2">{{ course.meeting_link }}</textarea>
+                        <button class="btn btn-primary mt-2" type="submit">Set Meeting Link</button>
+                        {% else %}
+                          <textarea class="form-control" type="url" id="meeting_link" name="meeting_link" rows="2" placeholder="zoom.com" ></textarea>
+                          <button class="btn btn-primary mt-2" type="submit">Set Meeting Link</button>
+                        {% endif %}
+                        
+                      </form>
+                    </div>
+                    
                     {% else %}
                     <form action="{{ course.id }}/change_status" method="post">
                       {% csrf_token %}
