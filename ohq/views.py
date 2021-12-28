@@ -1,3 +1,4 @@
+from django.db.models import constraints
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .models import Student, Instructor, TA, Course, Queue
@@ -22,9 +23,26 @@ def search(request):
 
     return render(request, template)
 
+
+def check_is_instructor(user, course):
+    is_instructor = False
+    if user.id is not None:
+        results = Instructor.objects.filter(user=user, course=course).count()
+        if results > 0:
+            is_instructor = True
+    return is_instructor
+
+
 class CourseQueueView(generic.DetailView):
     model = Course
-    template_name = "ohq/course_queue_instructor.html"
+    template_name = "ohq/course_queue.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        course = get_object_or_404(Course, pk=self.kwargs["pk"])
+        context["is_instructor"] = check_is_instructor(self.request.user, course)
+        print(context)
+        return context
 
 # Different views for different user types
 # https://stackoverflow.com/questions/54158999/django-show-different-content-based-on-user

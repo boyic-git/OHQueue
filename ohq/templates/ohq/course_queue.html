@@ -79,6 +79,7 @@
             {% endif %}
         </h2>
         <div class="row gx-5">
+            {% if is_instructor %}
             <div class="col-8">
                 <!-- Current student -->
                 {% if course.status %}
@@ -196,6 +197,9 @@
 
                 </div>
             </div>
+            {% else %}
+            
+            {% endif %}
         </div>
     </div>
 </body>

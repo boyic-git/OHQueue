@@ -1,6 +1,9 @@
 from django.contrib import admin
 from .models import Student, Instructor, TA, Course, Queue
 
+class InstructorAdmin(admin.ModelAdmin):
+    fields = []
+
 class CourseAdmin(admin.ModelAdmin):
     fields = ["code", "course_name", "semester", "status", ]
 

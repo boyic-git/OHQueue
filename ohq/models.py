@@ -66,6 +66,7 @@ class TA(models.Model):
     first_name = models.CharField(max_length=20, default="")
     last_name = models.CharField(max_length=20, default="")
     preferred_name = models.CharField(max_length=20, default="")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.first_name + " " + self.last_name
