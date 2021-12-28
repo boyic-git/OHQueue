@@ -51,8 +51,7 @@ def change_queue_status(request, pk):
             course.status = not course.status
             course.save()
     return redirect(request.META['HTTP_REFERER'])
-# Different views for different user types
-# https://stackoverflow.com/questions/54158999/django-show-different-content-based-on-user
+
 
 def login_request(request):
     context = {}
