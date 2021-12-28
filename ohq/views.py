@@ -28,3 +28,25 @@ class CourseQueueView(generic.DetailView):
 
 # Different views for different user types
 # https://stackoverflow.com/questions/54158999/django-show-different-content-based-on-user
+
+def login_request(request):
+    context = {}
+    if request.method == "POST":
+        username = request.POST["user[username]"]
+        password = request.POST["user[password]"]
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # http://localhost:8000/login_request
+            if request.META['HTTP_REFERER'][-13:] == "login_request":
+                return redirect("ohq:index")
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            context["message"] = "Invalid username or password!"
+            return render(request, "ohq/login.html", context)
+    else:
+        return render(request, "ohq/login.html", context)
+
+def logout_request(request):
+    logout(request)
+    return redirect("ohq:index")

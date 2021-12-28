@@ -19,6 +19,26 @@ SEMESTER = [(W1, "W1"),
             (W2, "W2"),
             (S, "S")]
 
+class Course(models.Model):
+    code = models.CharField(max_length=10)
+    subject = models.CharField(null=False,
+        max_length=5,
+        choices=SUBJECT_CODE,
+        default=CPEN)
+    number = models.IntegerField(default=0)
+    session = models.CharField(max_length=5, default="")
+    semester = models.CharField(null=False,
+        max_length=2,
+        choices=SEMESTER,
+        default=W1)
+    course_name = models.CharField(max_length=100, default="")
+    status = models.BooleanField(default=False)
+
+    def __str__(self):
+        if self.course_name:
+            return self.code + ": " + self.course_name
+        return self.code
+
 # Student
 class Student(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -35,6 +55,7 @@ class Instructor(models.Model):
     first_name = models.CharField(max_length=20, default="")
     last_name = models.CharField(max_length=20, default="")
     preferred_name = models.CharField(max_length=20, default="")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.first_name + " " + self.last_name
@@ -49,28 +70,7 @@ class TA(models.Model):
     def __str__(self):
         return self.first_name + " " + self.last_name
 
-class Course(models.Model):
-    code = models.CharField(max_length=10)
-    subject = models.CharField(null=False,
-        max_length=5,
-        choices=SUBJECT_CODE,
-        default=CPEN)
-    number = models.IntegerField(default=0)
-    session = models.CharField(max_length=5, default="")
-    semester = models.CharField(null=False,
-        max_length=2,
-        choices=SEMESTER,
-        default=W1)
-    course_name = models.CharField(max_length=100, default="")
-    instructor = models.ManyToManyField(Instructor)
-    teaching_assistant = models.ManyToManyField(TA, blank=True)
-    student = models.ManyToManyField(Student, blank=True)
-    status = models.BooleanField(default=False)
 
-    def __str__(self):
-        if self.course_name:
-            return self.code + ": " + self.course_name
-        return self.code
 
 class Queue(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
