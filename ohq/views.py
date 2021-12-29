@@ -2,7 +2,7 @@ from django.db.models import constraints
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .models import Student, Instructor, TA, Course, Queue
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, UserManager
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
@@ -130,3 +130,31 @@ def signup_request(request):
             return render(request, "ohq/login.html", context)
     else:
         return render(request, "ohq/signup.html", context)
+
+def change_password(request):
+    context = {}
+    if request.method == "POST":
+        old_password = request.POST["user[old_password]"]
+        password = request.POST["user[password]"]
+        password_confirm = request.POST["user[password1]"]
+        user = authenticate(username=request.user.username, password=old_password)
+        if user is None:
+            context["message"] = "Invalid password! Try again."
+            return render(request, "ohq/change_password.html", context)
+        else:
+            if password != password_confirm:
+                context["message"] = "New passwords do not match!"
+                return render(request, "ohq/change_password.html", context)
+            # elif old_password == password:
+            #     context["message"] = "New password should be different from old password!"
+            #     return render(request, "ohq/change_password.html", context)
+            else:
+                user.set_password(password)
+                user.save()
+                user = authenticate(username=request.user.username, password=password)
+                login(request, user)
+                context["success_message"] = "Passowrd is successfully changed."
+                return render(request, "ohq/change_password.html", context)
+    else:
+        return render(request, "ohq/change_password.html", context)
+    
