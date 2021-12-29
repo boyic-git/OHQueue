@@ -1,232 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     {% load static %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous">
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"></script>
 
     <meta charset="UTF-8">
     <title>OHQueue</title>
-</head>
+  </head>
 
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/">OHQueue</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-        <form class="d-flex" action="{% url 'ohq:search' %}" method="post">
-          {% csrf_token %}
-          <input class="form-control me-2" type="search" placeholder="Course e.g. CPEN502" aria-label="Search">
-          <button class="btn btn-success" type="submit">Search</button>
-        </form>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">OHQueue</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end"
+          id="navbarSupportedContent">
+          <form class="d-flex" action="{% url 'ohq:search' %}" method="post">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" placeholder="Course
+              e.g. CPEN502" aria-label="Search">
+            <button class="btn btn-success" type="submit">Search</button>
+          </form>
 
-        {% if user.is_authenticated %}
-        <ul class="navbar-nav mb-2 mb-lg-0">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              {{ user.username }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item text-center"" href="#">Manage Password</a></li>
-              <li><a class="dropdown-item text-center"" href="{% url 'ohq:logout' %}">Sign Out</a></li>
+          {% if user.is_authenticated %}
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ user.username }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item text-center""href="#">Manage
+                    Password</a></li>
+                <li><a class="dropdown-item text-center""href="{% url
+                    'ohq:logout' %}">Sign Out</a></li>
+              </ul>
+            </li>
+          </ul>
+          {% else %}
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Sign In/Up
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="navbarDropdown">
+                <li>
+                  <form action="{% url 'ohq:login_request' %}" method="post"
+                    accept-charset="UTF-8">
+                    {% csrf_token %}
+                    <input class="mx-3 mt-2" id="user_username" type="text"
+                      name="user[username]" placeholder="Username">
+                    <input class="mx-3 mt-2" id="user_password" type="password"
+                      name="user[password]" placeholder="Password">
+                    <div class="d-grid gap-2">
+                      <button type="submit" class="mx-4 mt-2 btn btn-primary">Sign
+                        In</button>
+                    </div>
+
+                  </form>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item text-center""href="/signup">Sign
+                      Up</a></li>
+                  <li><a class="dropdown-item text-center""href="#">Forget
+                      Password?</a></li>
+                </ul>
+              </li>
             </ul>
-          </li>
-        </ul>
-        {% else %}
-        <ul class="navbar-nav mb-2 mb-lg-0">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Sign In/Up
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-              <li>
-                <form action="{% url 'ohq:login_request' %}" method="post" accept-charset="UTF-8">
-                  {% csrf_token %}
-                  <input class="mx-3 mt-2" id="user_username" type="text" name="user[username]" placeholder="Username">
-                  <input class="mx-3 mt-2"id="user_password" type="password" name="user[password]" placeholder="Password"> 
-                  <div class="d-grid gap-2">
-                    <button type="submit" class="mx-4 mt-2 btn btn-primary">Sign In</button>
-                  </div>                
-                  
-                </form>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-center"" href="/signup">Sign Up</a></li>
-              <li><a class="dropdown-item text-center"" href="#">Forget Password?</a></li>
-            </ul>
-          </li>
-        </ul>
-        {% endif %}
-      </div>
-    </div>
-  </nav>
-    
-    <div class="container-fluid mt-2">
-        <h2>
-            {{ course.code }}: {{ course.course_name }}
-            {% if course.status %}
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" 
-                    class="bi bi-circle-fill" viewBox="0 0 16 16" style="fill:#28a745">
-                    <circle cx="8" cy="8" r="8"></circle>
-                </svg>
-            {% else %}
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" 
-                    class="bi bi-circle-fill" viewBox="0 0 16 16" style="fill:#dc3545">
-                    <circle cx="8" cy="8" r="8"></circle>
-                </svg>
             {% endif %}
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-fluid mt-2">
+        <h2>
+          {{ course.code }}: {{ course.course_name }}
+          {% if course.status %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+            fill="currentColor"
+            class="bi bi-circle-fill" viewBox="0 0 16 16" style="fill:#28a745">
+            <circle cx="8" cy="8" r="8"></circle>
+          </svg>
+          {% else %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+            fill="currentColor"
+            class="bi bi-circle-fill" viewBox="0 0 16 16" style="fill:#dc3545">
+            <circle cx="8" cy="8" r="8"></circle>
+          </svg>
+          {% endif %}
         </h2>
         <div class="row gx-5">
-            {% if is_instructor %}
-            <div class="col-8">
-                <!-- Current student -->
-                {% if course.status %}
-                <div class="container p-3 border bg-light">
-                    <h4>Current student(s) in office hour</h4>
-                    <button type="button" class="btn btn-primary">Next Student</button>
-                    <button type="button" class="btn btn-secondary" disabled>Put Back Selected Student</button>
-                    <table class="table table-striped mt-2">
-                        <thead>
-                        <tr>
-                            <th style="width: 10%">Select</th>
-                            <th style="width: 20%">Name</th>
-                            <th style="width: 70%">Question</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                </div>
-                            </td>
-                            <td>Doe</td>
-                            <td>john@example.com</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                </div>
-                            </td>
-                            <td>Moe</td>
-                            <td>mary@example.com</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                </div>
-                            </td>
-                            <td>Dooley</td>
-                            <td>july@example.com</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Students in queue -->
-                <div class="container p-3 border bg-light">
-                    <h4>Students in queue</h4>
-                    <button type="button" class="btn btn-primary">Invite Selected Students</button> 
-                    <table class="table table-striped mt-2">
-                        <thead>
-                        <tr>
-                            <th style="width: 10%">Select</th>
-                            <th style="width: 20%">Name</th>
-                            <th style="width: 70%">Question</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                </div>
-                            </td>
-                            <td>Doe</td>
-                            <td>john@example.com</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                </div>
-                            </td>
-                            <td>Moe</td>
-                            <td>mary@example.com</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="form-group form-check">
-                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                                </div>
-                            </td>
-                            <td>Dooley</td>
-                            <td>july@example.com</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Office hour is off -->
-                {% else %}
-                <div class="container p-3 border bg-light">
-                    <h4>You are yet to start the office hour queue!</h4>
-                    <p>Toggle the switch on the right to start office hour.</p>
-                </div>
-                {% endif %}
-            </div>
-            <div class="col-4">
-                <div class="container p-3 border bg-light">
-                    <!-- Toggle the queue on/off -->
-                    <h4>
-                      Office Hour Queue Status:
-                    </h4>
-                    
-                    {% if course.status %}
-                    <form action="{{ course.id }}/change_status" method="post">
-                      {% csrf_token %}
-                      <div class="btn-group" role="group">
-                        <button class="btn btn-primary" type="submit" disabled>On</button>
-                        <button class="btn btn-primary" type="submit">Off</button>
+          {% if is_instructor %}
+          <div class="col-8">
+            <!-- Current student -->
+            {% if course.status %}
+            <div class="container p-3 border bg-light">
+              <h4>Current student(s) in office hour</h4>
+              <button type="button" class="btn btn-primary">Next Student</button>
+              <button type="button" class="btn btn-secondary" disabled>Put Back
+                Selected Student</button>
+              <table class="table table-striped mt-2">
+                <thead>
+                  <tr>
+                    <th style="width: 10%">Select</th>
+                    <th style="width: 20%">Name</th>
+                    <th style="width: 70%">Question</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input"
+                          id="exampleCheck1">
                       </div>
-                    </form>
-
-                    <div class="mt-2">
-                      <form action="{{ course.id }}/meeting_link" method="post">
-                        {% csrf_token %}
-                        <label for="meeting_link">Meeting Link: (ignore if you have already told students where the office hour is holding)
-                        </label>
-                        {% if course.meeting_link %}
-                        <textarea class="form-control" type="url" id="meeting_link" name="meeting_link" rows="2">{{ course.meeting_link }}</textarea>
-                        <button class="btn btn-primary mt-2" type="submit">Set Meeting Link</button>
-                        {% else %}
-                          <textarea class="form-control" type="url" id="meeting_link" name="meeting_link" rows="2" placeholder="zoom.com" ></textarea>
-                          <button class="btn btn-primary mt-2" type="submit">Set Meeting Link</button>
-                        {% endif %}
-                        
-                      </form>
-                    </div>
-                    
-                    {% else %}
-                    <form action="{{ course.id }}/change_status" method="post">
-                      {% csrf_token %}
-                      <div class="btn-group" role="group">
-                        <button class="btn btn-primary" type="submit">On</button>
-                        <button class="btn btn-primary" type="submit" disabled>Off</button>
+                    </td>
+                    <td>Doe</td>
+                    <td>john@example.com</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input"
+                          id="exampleCheck1">
                       </div>
-                    </form>
-                    {% endif %}
-
-                </div>
+                    </td>
+                    <td>Moe</td>
+                    <td>mary@example.com</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input"
+                          id="exampleCheck1">
+                      </div>
+                    </td>
+                    <td>Dooley</td>
+                    <td>july@example.com</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+
+            <!-- Students in queue -->
+            <div class="container p-3 border bg-light">
+              <h4>Students in queue</h4>
+              <button type="button" class="btn btn-primary">Invite Selected
+                Students</button>
+              <table class="table table-striped mt-2">
+                <thead>
+                  <tr>
+                    <th style="width: 10%">Select</th>
+                    <th style="width: 20%">Name</th>
+                    <th style="width: 70%">Question</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input"
+                          id="exampleCheck1">
+                      </div>
+                    </td>
+                    <td>Doe</td>
+                    <td>john@example.com</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input"
+                          id="exampleCheck1">
+                      </div>
+                    </td>
+                    <td>Moe</td>
+                    <td>mary@example.com</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input"
+                          id="exampleCheck1">
+                      </div>
+                    </td>
+                    <td>Dooley</td>
+                    <td>july@example.com</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Office hour is off -->
             {% else %}
-            
+            <div class="container p-3 border bg-light">
+              <h4>You are yet to start the office hour queue!</h4>
+              <p>Toggle the switch on the right to start office hour.</p>
+            </div>
             {% endif %}
+          </div>
+          <div class="col-4">
+            <div class="container p-3 border bg-light">
+              <!-- Toggle the queue on/off -->
+              <h4>
+                Office Hour Queue Status:
+              </h4>
+
+              {% if course.status %}
+              <form action="{{ course.id }}/change_status" method="post">
+                {% csrf_token %}
+                <div class="btn-group" role="group">
+                  <button class="btn btn-primary" type="submit" disabled>On</button>
+                  <button class="btn btn-primary" type="submit">Off</button>
+                </div>
+              </form>
+
+              <div class="mt-2">
+                <form action="{{ course.id }}/meeting_link" method="post">
+                  {% csrf_token %}
+                  <label for="meeting_link">Meeting Link: (ignore if you have
+                    already told students where the office hour is holding)
+                  </label>
+                  {% if course.meeting_link %}
+                  <textarea class="form-control" type="url" id="meeting_link"
+                    name="meeting_link" rows="2">{{ course.meeting_link }}</textarea>
+                  <button class="btn btn-primary mt-2" type="submit">Set Meeting
+                    Link</button>
+                  {% else %}
+                  <textarea class="form-control" type="url" id="meeting_link"
+                    name="meeting_link" rows="2" placeholder="zoom.com"></textarea>
+                  <button class="btn btn-primary mt-2" type="submit">Set Meeting
+                    Link</button>
+                  {% endif %}
+
+                </form>
+              </div>
+
+              {% else %}
+              <form action="{{ course.id }}/change_status" method="post">
+                {% csrf_token %}
+                <div class="btn-group" role="group">
+                  <button class="btn btn-primary" type="submit">On</button>
+                  <button class="btn btn-primary" type="submit" disabled>Off</button>
+                </div>
+              </form>
+              {% endif %}
+
+            </div>
+          </div>
+          {% else %}
+
+          {% endif %}
         </div>
-    </div>
-</body>
-</html>
+      </div>
+    </body>
+  </html>
