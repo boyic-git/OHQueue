@@ -87,7 +87,12 @@
       </nav>
 
       <div class="container-fluid mt-2">
-        <h2>Courses</h2>
+        <h2>Search results for "{{ search_query }}": </h2>
+        {% if no_result %}
+        <div class="alert alert-warning mt-2"> <!--Style the message paragraph with .alert and .alert-warning class -->
+          {{ no_result }}
+        </div>
+        {% else %}
         <div class="card-columns-vertical">
           {% for course in course_list %}
           <div class="card mt-2">
@@ -150,6 +155,7 @@
           </div>
           {% endfor %}
         </div>
+        {% endif %}
       </div>
 
     </body>

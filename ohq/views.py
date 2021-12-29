@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
 from django.contrib.auth import login, logout, authenticate
+import re
 
 # Create your views here.
 class CourseListView(generic.ListView):
@@ -19,9 +20,32 @@ class CourseListView(generic.ListView):
     #     return courses
 
 def search(request):
-    template = "ohq/search.html"
+    if request.method == "POST":
+        context = {}
+        template = "ohq/search_result.html"
 
-    return render(request, template)
+        query = request.POST["search_query"]
+        context["search_query"] = query
+        subject, number, session = re.compile("([a-zA-Z]+)?([0-9]+)?([a-zA-Z]+)?").match(query).groups()
+        course_list = None
+
+        if subject:
+            course_list = Course.objects.filter(code__istartswith=query).all()
+        else:
+            if number:
+                course_list = Course.objects.filter(code__icontains=number).all()
+
+        if len(course_list) == 0:
+            course_list = Course.objects.filter(course_name__icontains=query).all()
+
+        if len(course_list) == 0:
+            context["no_result"] = "No results for {}, try another keywords".format(query)
+            
+        context["course_list"] = course_list
+        return render(request, template, context)
+
+    else:
+        return render(request, "ohq/course_list.html")
 
 
 def check_is_instructor(user, course):

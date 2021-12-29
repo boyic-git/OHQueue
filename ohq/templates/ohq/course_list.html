@@ -30,8 +30,8 @@
           id="navbarSupportedContent">
           <form class="d-flex" action="{% url 'ohq:search' %}" method="post">
             {% csrf_token %}
-            <input class="form-control me-2" type="search" placeholder="Course
-              e.g. CPEN502" aria-label="Search">
+            <input class="form-control me-2" type="search" placeholder="Course e.g. CPEN502" 
+            name="search_query" aria-label="Search">
             <button class="btn btn-success" type="submit">Search</button>
           </form>
 

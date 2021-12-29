@@ -35,5 +35,19 @@
             "course_name": "Architecture for Learning Systems",
             "status": false
         }
+    },
+    { "model": "ohq.course",
+        "fields": {
+            "code": "EECE541",
+            "course_name": "Multimedia Systems",
+            "status": true
+        }
+    },
+    { "model": "ohq.course",
+        "fields": {
+            "code": "EECE589",
+            "course_name": "Introduction to Robotics",
+            "status": false
+        }
     }
 ]
