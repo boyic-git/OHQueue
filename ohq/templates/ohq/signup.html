@@ -27,22 +27,28 @@
   </nav>
 
     <!-- Stylize Login form -->
-    <form action="{% url 'ohq:login' %}" method="post">
+    <form action="{% url 'ohq:signup_request' %}" method="post">
         {% csrf_token %}
         <div class="container"> 
-            <h1>Login</h1>
+            <h1>Sign Up</h1>
             <div class="form-group"> 
               <label for="username"><b>User Name</b></label>
-              <input id="username" class = "form-control" type="text" placeholder="Username" name="user[username]" required> <!--Style input with .form-control class -->
+              <input id="username" class = "form-control" type="text" placeholder="Username" value="{{ username }}" name="user[username]" required> <!--Style input with .form-control class -->
+              <label class="mt-2" for="first_name"><b>First Name</b></label>
+              <input id="first_name" class = "form-control" type="text" placeholder="First Name" value="{{ first_name }}" name="user[first_name]" required> <!--Style input with .form-control class -->
+              <label class="mt-2" for="last_name"><b>Last Name</b></label>
+              <input id="last_name" class = "form-control" type="text" placeholder="Last Name" value="{{ last_name }}" name="user[last_name]" required> <!--Style input with .form-control class -->
               <label class="mt-2" for="psw"><b>Password</b></label>
-              <input id="psw" class = "form-control" type="password"  placeholder="Password" name="user[password]" required> <!--Style input with .form-control class -->
+              <input id="psw" class = "form-control" type="password" placeholder="Password" name="user[password]" required> <!--Style input with .form-control class -->
+              <label class="mt-2" for="psw1"><b>Confirm Password</b></label>
+              <input id="psw1" class = "form-control" type="password"  placeholder="Password Again" name="user[password1]" required>
             </div>
             {% if message %}
               <div class="alert alert-warning mt-2"> <!--Style the message paragraph with .alert and .alert-warning class -->
                 {{ message }}
               </div>
             {% endif %}
-            <button class="btn btn-primary mt-2" type="submit">Login</button> <!--Style button with .btn and .btn-primary class -->
+            <button class="btn btn-primary mt-2" type="submit">Signup</button> <!--Style button with .btn and .btn-primary class -->
         </div>
     </form>
 

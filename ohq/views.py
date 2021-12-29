@@ -84,3 +84,49 @@ def login_request(request):
 def logout_request(request):
     logout(request)
     return redirect("ohq:index")
+
+def signup_request(request):
+    context = {}
+    context["username"] = ""
+    context["first_name"] = ""
+    context["last_name"] = ""
+    if request.method == "POST":
+        username = request.POST["user[username]"]
+        password = request.POST["user[password]"]
+        password_confirm = request.POST["user[password1]"]
+        first_name = request.POST["user[first_name]"]
+        last_name = request.POST["user[last_name]"]
+
+        context["username"] = username
+        context["first_name"] = first_name
+        context["last_name"] = last_name
+
+        # check if username is taken
+        is_exist = False
+        try:
+            User.objects.get(username=username)
+            is_exist = True
+        except:
+            pass
+        if is_exist: # username is taken
+            context["message"] = "Username is taken! Try login or using a different username."
+            return render(request, "ohq/signup.html", context)
+        else: # okay to signup with the username
+            # check if passwords matches
+            if password != password_confirm:
+                context["message"] = "Passwords do not match!"
+                return render(request, "ohq/signup.html", context)
+            user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=password)
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # http://localhost:8000/login_request
+            if request.META['HTTP_REFERER'][-6:] == "signup":
+                return redirect("ohq:index")
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            context["message"] = "Invalid username or password!"
+            return render(request, "ohq/login.html", context)
+    else:
+        return render(request, "ohq/signup.html", context)
