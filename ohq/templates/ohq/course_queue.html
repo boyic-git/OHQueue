@@ -44,10 +44,8 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item text-center""href="#">Manage
-                    Password</a></li>
-                <li><a class="dropdown-item text-center""href="{% url
-                    'ohq:logout' %}">Sign Out</a></li>
+                <li><a class="dropdown-item text-center" href="{% url 'ohq:change_password' %}">Manage Account</a></li>
+                <li><a class="dropdown-item text-center" href="{% url 'ohq:logout' %}">Sign Out</a></li>
               </ul>
             </li>
           </ul>
@@ -69,16 +67,15 @@
                     <input class="mx-3 mt-2" id="user_password" type="password"
                       name="user[password]" placeholder="Password">
                     <div class="d-grid gap-2">
-                      <button type="submit" class="mx-4 mt-2 btn btn-primary">Sign
-                        In</button>
+                      <button type="submit" class="mx-4 mt-2 btn btn-primary">
+                        Sign In
+                      </button>
                     </div>
-
                   </form>
+                  
                   <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item text-center""href="/signup">Sign
-                      Up</a></li>
-                  <li><a class="dropdown-item text-center""href="#">Forget
-                      Password?</a></li>
+                  <li><a class="dropdown-item text-center" href="signup">Sign Up</a></li>
+                  <li><a class="dropdown-item text-center" href="#">Forget Password?</a></li>
                 </ul>
               </li>
             </ul>
