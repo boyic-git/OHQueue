@@ -1,7 +1,7 @@
 from django.db.models import constraints
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import Student, Instructor, TA, Course, Queue
+from .models import Student, Instructor, Course, Queue
 from django.contrib.auth.models import User, UserManager
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -118,9 +118,11 @@ def signup_request(request):
         username = request.POST["user[username]"]
         password = request.POST["user[password]"]
         password_confirm = request.POST["user[password1]"]
+        email = request.POST["user[email]"]
         first_name = request.POST["user[first_name]"]
         last_name = request.POST["user[last_name]"]
 
+        context["email"] = email
         context["username"] = username
         context["first_name"] = first_name
         context["last_name"] = last_name
@@ -140,7 +142,7 @@ def signup_request(request):
             if password != password_confirm:
                 context["message"] = "Passwords do not match!"
                 return render(request, "ohq/signup.html", context)
-            user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=password)
+            user = User.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name, password=password)
 
         user = authenticate(username=username, password=password)
         if user is not None:
@@ -163,12 +165,12 @@ def change_password(request):
         password_confirm = request.POST["user[password1]"]
         user = authenticate(username=request.user.username, password=old_password)
         if user is None:
-            context["message"] = "Invalid password! Try again."
+            context["password_message"] = "Invalid password! Try again."
             return render(request, "ohq/change_password.html", context)
         else:
             if password != password_confirm:
-                context["message"] = "New passwords do not match!"
-                return render(request, "ohq/change_password.html", context)
+                context["password_message"] = "New passwords do not match!"
+                return render(request, "ohq/manage_account.html", context)
             # elif old_password == password:
             #     context["message"] = "New password should be different from old password!"
             #     return render(request, "ohq/change_password.html", context)
@@ -177,8 +179,22 @@ def change_password(request):
                 user.save()
                 user = authenticate(username=request.user.username, password=password)
                 login(request, user)
-                context["success_message"] = "Passowrd is successfully changed."
-                return render(request, "ohq/change_password.html", context)
+                context["success_password_message"] = "Passowrd is successfully changed."
+                return render(request, "ohq/manage_account.html", context)
     else:
-        return render(request, "ohq/change_password.html", context)
+        return render(request, "ohq/manage_account.html", context)
     
+def change_preferred_name(request):
+    context = {}
+    if request.method == "POST":
+        preferred_name = request.POST["user[preferred_name]"]
+        if not preferred_name:
+            context["name_message"] = "Preferred name is set same as your first name."
+            return render(request, "ohq/manage_account.html", context)
+        else:
+            request.user.preferred_name = preferred_name
+            request.user.save()
+            context["success_name_message"] = "New preferred name is set."
+            return render(request, "ohq/manage_account.html", context)
+    else:
+        return render(request, "ohq/manage_account.html", context)
