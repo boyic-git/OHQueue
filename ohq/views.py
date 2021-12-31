@@ -111,6 +111,7 @@ def logout_request(request):
 
 def signup_request(request):
     context = {}
+    context["email"] = ""
     context["username"] = ""
     context["first_name"] = ""
     context["last_name"] = ""
@@ -143,6 +144,7 @@ def signup_request(request):
                 context["message"] = "Passwords do not match!"
                 return render(request, "ohq/signup.html", context)
             user = User.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name, password=password)
+            student = Student.objects.create(user=user)
 
         user = authenticate(username=username, password=password)
         if user is not None:
