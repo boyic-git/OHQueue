@@ -199,8 +199,8 @@
               <div class="mt-2">
                 <form action="{{ course.id }}/meeting_link" method="post">
                   {% csrf_token %}
-                  <label for="meeting_link">Meeting Link: (ignore if you have
-                    already told students where the office hour is holding)
+                  <label for="meeting_link">
+                  Meeting Link: (ignore if you have already told students where the office hour is holding)
                   </label>
                   {% if course.meeting_link %}
                   <textarea class="form-control" type="url" id="meeting_link"
@@ -234,45 +234,37 @@
           <!-- student view -->
             {% if is_joined %}
             <!-- show student's position in queue -->
-            <div>
+            <div class="mx-auto">
               <!-- Current student -->
               <div class="container-fluid p-3 border bg-light">
-                <h4>Current student(s) in office hour</h4>
-                <button type="button" class="btn btn-primary">Next Student</button>
-                <button type="button" class="btn btn-secondary" disabled>Put Back
-                  Selected Student</button>
-                <table class="table table-striped mt-2">
-                  <thead>
-                    <tr>
-                      <th style="width: 10%">Select</th>
-                      <th style="width: 20%">Name</th>
-                      <th style="width: 70%">Question</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-  
-  
-                    {% for name in queue %}
-                    <tr>
-                      <td>
-                        <div class="form-group form-check">
-                          <input type="checkbox" class="form-check-input"
-                            id="exampleCheck1">
-                        </div>
-                      </td>
-                      <td>{{ name.first_name }}</td>
-                      <td>{{ name.question }}</td>
-                    </tr>
-                    {% endfor %}
-  
-                    
-                  </tbody>
-                </table>
+                <h4>You are in queue! There are <b>{{ number_in_queue }}</b> students before you.</h4>
+                <form action="{{ course.id }}/join_queue">
+                  <label for="student_question">Write down your question(s):</label>
+                  <textarea name="student_question" id="student_question" 
+                    class="form-control" rows="3" placeholder="E.g. how many stars in the universe?">{{ student_question }}
+                  </textarea>
+                  <button type="submit" class="btn btn-primary mt-2">Modify Question/button>
+                  <button type="submit" formaction="{{ course.id }}/quit_queue" 
+                    class="btn btn-danger mt-2">Quit Queue</button>
+                </form>
               </div>
-            </div>  
+            </div> 
             {% else %}
             <!-- show join queue views -->
-
+            <div class="mx-auto">
+              <!-- Current student -->
+              <div class="container-fluid p-3 border bg-light">
+                <h4>You are not in queue. There are <b>{{ number_in_queue }}</b> students in queue.</h4>
+                <form action="{{ course.id }}/join_queue">
+                  <label for="student_question">Write down your question(s):</label>
+                  <textarea name="student_question" id="student_question" 
+                    class="form-control" rows="3" placeholder="E.g. how many stars in the universe?"></textarea>
+                  <button type="submit" class="btn btn-primary mt-2">Join Queue</button>
+                  <button type="submit" formaction="{{ course.id }}/quit_queue" 
+                    class="btn btn-secondary mt-2" disabled>Quit Queue</button>
+                </form>
+              </div>
+            </div> 
             {% endif %}
           {% endif %}
         </div>
