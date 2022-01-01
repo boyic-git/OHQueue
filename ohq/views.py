@@ -51,21 +51,39 @@ def search(request):
 def check_is_instructor(user, course):
     is_instructor = False
     if user.id is not None:
-        results = Instructor.objects.filter(user=user, course=course).count()
+        results = Instructor.objects.filter(user=user, teaching_course=course).count()
         if results > 0:
             is_instructor = True
     return is_instructor
+
+def get_position_in_queue(user, course):
+    if user.id is not None:
+        result = Queue.objects.filter()
 
 class CourseQueueView(generic.DetailView):
     model = Course
     template_name = "ohq/course_queue.html"
 
     def get_context_data(self, **kwargs):
+        def get_queue(course):
+            result = []
+            query_set = Queue.objects.filter(course=course).order_by("joined_time").all()
+            for q in query_set:
+                temp = {}
+                temp["first_name"] = q.student.user.first_name
+                temp["question"] = q.question
+                result.append(temp)
+            return result
         context = super().get_context_data(**kwargs)
         course = get_object_or_404(Course, pk=self.kwargs["pk"])
-        context["is_instructor"] = check_is_instructor(self.request.user, course)
-        # print(context)
+        is_instructor = check_is_instructor(self.request.user, course)
+        if is_instructor:
+            context["is_instructor"] = is_instructor
+        else:
+            pass
+        context["queue"] = get_queue(course)
         return context
+
 
 def change_queue_status(request, pk):
     if request.method == "POST":

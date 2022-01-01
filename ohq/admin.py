@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
-from .models import Student, Instructor, Course, Queue
+from .models import Student, Instructor, Course, Queue, SubQueue
 
 # class UserAdmin(admin.ModelAdmin):
 #     fields = ["user", "first_name"]
@@ -26,7 +26,12 @@ class CourseAdmin(admin.ModelAdmin):
         return str(obj)
 
 class QueueAdmin(admin.ModelAdmin):
-    fields = ["course", "student", "question", ]
+    list_display = ["course__code", "student", "question", "joined_time"]
+    fields = ["course", "student", "question"]
+    readonly_fields = ["joined_time"]
+
+    def course__code(self, obj):
+        return obj.course.code
 
 # Register your models here.
 admin.site.unregister(Group)
@@ -36,3 +41,4 @@ admin.site.register(Student, UserAdmin)
 admin.site.register(Instructor, UserAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Queue, QueueAdmin)
+admin.site.register(SubQueue)
