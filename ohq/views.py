@@ -56,9 +56,15 @@ def check_is_instructor(user, course):
             is_instructor = True
     return is_instructor
 
-def get_position_in_queue(user, course):
+def get_position_in_queue(user, course, joined_time):
     if user.id is not None:
-        result = Queue.objects.filter()
+        result = Queue.objects.filter(course=course, joined_time__lt=joined_time).count()
+        print(result)
+
+def check_is_joined(user, course):
+    if Queue.objects.filter(course=course, student=user.student).count() > 0:
+        return True
+    return False
 
 class CourseQueueView(generic.DetailView):
     model = Course
@@ -80,7 +86,13 @@ class CourseQueueView(generic.DetailView):
         if is_instructor:
             context["is_instructor"] = is_instructor
         else:
-            pass
+            is_joined = check_is_joined(self.request.user, course)
+            if not is_joined:
+                print("not joined")
+            else:
+                # only 1 queue object per user allowed
+                joined_time = get_object_or_404(Queue, student=self.request.user.student).joined_time
+                get_position_in_queue(self.request.user, course, joined_time)
         context["queue"] = get_queue(course)
         return context
 
