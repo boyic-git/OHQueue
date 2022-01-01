@@ -58,28 +58,27 @@
               <ul class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="navbarDropdown">
                 <li>
-                  <form action="{% url 'ohq:login_request' %}" method="post"
-                    accept-charset="UTF-8">
-                    {% csrf_token %}
-                    <input class="mx-3 mt-2" id="user_username" type="text"
-                      name="user[username]" placeholder="Username">
-                    <input class="mx-3 mt-2" id="user_password" type="password"
-                      name="user[password]" placeholder="Password">
-                    <div class="d-grid gap-2">
-                      <button type="submit" class="mx-4 mt-2 btn btn-primary">
-                        Sign In
-                      </button>
-                    </div>
-                  </form>
-                  
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item text-center" href="signup">Sign Up</a></li>
-                  <li><a class="dropdown-item text-center" href="#">Forget Password?</a></li>
-                </ul>
-              </li>
-            </ul>
-            {% endif %}
-          </div>
+                <form action="{% url 'ohq:login_request' %}" method="post"
+                  accept-charset="UTF-8">
+                  {% csrf_token %}
+                  <input class="mx-3 mt-2" id="user_username" type="text"
+                    name="user[username]" placeholder="Username">
+                  <input class="mx-3 mt-2" id="user_password" type="password"
+                    name="user[password]" placeholder="Password">
+                  <div class="d-grid gap-2">
+                    <button type="submit" class="mx-4 mt-2 btn btn-primary">
+                      Sign In
+                    </button>
+                  </div>
+                </form>
+                </li> 
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-center" href="signup">Sign Up</a></li>
+                <li><a class="dropdown-item text-center" href="#">Forget Password?</a></li>
+              </ul>
+            </li>
+          </ul>
+          {% endif %}
         </div>
       </nav>
 
@@ -232,7 +231,48 @@
 
           {% else %}
           <!-- student view -->
+            {% if is_joined %}
+            <!-- show student's position in queue -->
+            <div>
+              <!-- Current student -->
+              <div class="container-fluid p-3 border bg-light">
+                <h4>Current student(s) in office hour</h4>
+                <button type="button" class="btn btn-primary">Next Student</button>
+                <button type="button" class="btn btn-secondary" disabled>Put Back
+                  Selected Student</button>
+                <table class="table table-striped mt-2">
+                  <thead>
+                    <tr>
+                      <th style="width: 10%">Select</th>
+                      <th style="width: 20%">Name</th>
+                      <th style="width: 70%">Question</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+  
+  
+                    {% for name in queue %}
+                    <tr>
+                      <td>
+                        <div class="form-group form-check">
+                          <input type="checkbox" class="form-check-input"
+                            id="exampleCheck1">
+                        </div>
+                      </td>
+                      <td>{{ name.first_name }}</td>
+                      <td>{{ name.question }}</td>
+                    </tr>
+                    {% endfor %}
+  
+                    
+                  </tbody>
+                </table>
+              </div>
+            </div>  
+            {% else %}
+            <!-- show join queue views -->
 
+            {% endif %}
           {% endif %}
         </div>
       </div>

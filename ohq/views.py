@@ -85,15 +85,16 @@ class CourseQueueView(generic.DetailView):
         is_instructor = check_is_instructor(self.request.user, course)
         if is_instructor:
             context["is_instructor"] = is_instructor
+            context["queue"] = get_queue(course)
         else:
             is_joined = check_is_joined(self.request.user, course)
             if not is_joined:
-                print("not joined")
+                context["is_joined"] = False
             else:
                 # only 1 queue object per user allowed
+                context["is_joined"] = True
                 joined_time = get_object_or_404(Queue, student=self.request.user.student).joined_time
                 get_position_in_queue(self.request.user, course, joined_time)
-        context["queue"] = get_queue(course)
         return context
 
 

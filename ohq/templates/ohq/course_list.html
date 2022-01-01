@@ -30,8 +30,7 @@
           id="navbarSupportedContent">
           <form class="d-flex" action="{% url 'ohq:search' %}" method="post">
             {% csrf_token %}
-            <input class="form-control me-2" type="search" placeholder="Course e.g. CPEN502" 
-            name="search_query" aria-label="Search">
+            <input class="form-control me-2" type="search" placeholder="Course e.g. CPEN502" aria-label="Search">
             <button class="btn btn-success" type="submit">Search</button>
           </form>
 
@@ -59,28 +58,27 @@
               <ul class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="navbarDropdown">
                 <li>
-                  <form action="{% url 'ohq:login_request' %}" method="post"
-                    accept-charset="UTF-8">
-                    {% csrf_token %}
-                    <input class="mx-3 mt-2" id="user_username" type="text"
-                      name="user[username]" placeholder="Username">
-                    <input class="mx-3 mt-2" id="user_password" type="password"
-                      name="user[password]" placeholder="Password">
-                    <div class="d-grid gap-2">
-                      <button type="submit" class="mx-4 mt-2 btn btn-primary">
-                        Sign In
-                      </button>
-                    </div>
-                  </form>
-
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item text-center" href="signup">Sign Up</a></li>
-                  <li><a class="dropdown-item text-center" href="#">Forget Password?</a></li>
-                </ul>
-              </li>
-            </ul>
-            {% endif %}
-          </div>
+                <form action="{% url 'ohq:login_request' %}" method="post"
+                  accept-charset="UTF-8">
+                  {% csrf_token %}
+                  <input class="mx-3 mt-2" id="user_username" type="text"
+                    name="user[username]" placeholder="Username">
+                  <input class="mx-3 mt-2" id="user_password" type="password"
+                    name="user[password]" placeholder="Password">
+                  <div class="d-grid gap-2">
+                    <button type="submit" class="mx-4 mt-2 btn btn-primary">
+                      Sign In
+                    </button>
+                  </div>
+                </form>
+                </li> 
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-center" href="signup">Sign Up</a></li>
+                <li><a class="dropdown-item text-center" href="#">Forget Password?</a></li>
+              </ul>
+            </li>
+          </ul>
+          {% endif %}
         </div>
       </nav>
 
