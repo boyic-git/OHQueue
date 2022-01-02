@@ -102,6 +102,8 @@ class CourseQueueView(generic.DetailView):
                 joined_time = queue_obj.joined_time
                 context["number_in_queue"] = get_position_in_queue(self.request.user, course, joined_time)
                 context["student_question"] = queue_obj.question
+                # TODO: look here before making the form
+                context["queue_checkbox_id"] = queue_obj.student.user.username # unique id
         return context
 
 
@@ -240,6 +242,26 @@ def change_preferred_name(request):
         return render(request, "ohq/manage_account.html", context)
 
 def join_queue(request, pk):
+    context = {}
+    if request.method == "POST":
+        student_question = request.POST["student_question"]
+        course = get_object_or_404(Course, pk=pk)
+        if Queue.objects.filter(course=course, student=request.user.student).count() > 0:
+            # joined queue, change student question
+            print("change here")
+            queue = Queue.objects.filter(course=course, student=request.user.student).all()[0]
+            queue.question = student_question
+            queue.save()
+        else: # haven't joined queue
+            Queue.objects.create(course=course, student=request.user.student, \
+                question=student_question)
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        return render(request, "ohq/manage_account.html", context)
+
+
+# TODO: new stuff
+def invite_student(request, pk):
     context = {}
     if request.method == "POST":
         student_question = request.POST["student_question"]
