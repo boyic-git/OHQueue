@@ -238,12 +238,13 @@
               <!-- Current student -->
               <div class="container-fluid p-3 border bg-light">
                 <h4>You are in queue! There are <b>{{ number_in_queue }}</b> students before you.</h4>
-                <form action="{{ course.id }}/join_queue">
+                <form action="{{ course.id }}/join_queue" method="post">
+                  {% csrf_token %}
                   <label for="student_question">Write down your question(s):</label>
                   <textarea name="student_question" id="student_question" 
-                    class="form-control" rows="3" placeholder="E.g. how many stars in the universe?">{{ student_question }}
+                    class="form-control" rows="2" placeholder="E.g. how many stars in the universe?">{{student_question}}
                   </textarea>
-                  <button type="submit" class="btn btn-primary mt-2">Modify Question/button>
+                  <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
                   <button type="submit" formaction="{{ course.id }}/quit_queue" 
                     class="btn btn-danger mt-2">Quit Queue</button>
                 </form>
@@ -255,10 +256,11 @@
               <!-- Current student -->
               <div class="container-fluid p-3 border bg-light">
                 <h4>You are not in queue. There are <b>{{ number_in_queue }}</b> students in queue.</h4>
-                <form action="{{ course.id }}/join_queue">
+                <form action="{{ course.id }}/join_queue" method="post">
+                  {% csrf_token %}
                   <label for="student_question">Write down your question(s):</label>
                   <textarea name="student_question" id="student_question" 
-                    class="form-control" rows="3" placeholder="E.g. how many stars in the universe?"></textarea>
+                    class="form-control" rows="2" placeholder="E.g. how many stars in the universe?"></textarea>
                   <button type="submit" class="btn btn-primary mt-2">Join Queue</button>
                   <button type="submit" formaction="{{ course.id }}/quit_queue" 
                     class="btn btn-secondary mt-2" disabled>Quit Queue</button>

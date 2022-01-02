@@ -16,5 +16,6 @@ urlpatterns = [
     path("signup", views.signup_request, name="signup_request"),
     path("password", views.change_password, name="change_password"),
     path("change_preferred_name", views.change_preferred_name, name="change_preferred_name"),
+    path("course/<int:pk>/join_queue", views.join_queue, name="joinn_queue"),
 
     ]

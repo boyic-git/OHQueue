@@ -238,3 +238,30 @@ def change_preferred_name(request):
             return render(request, "ohq/manage_account.html", context)
     else:
         return render(request, "ohq/manage_account.html", context)
+
+def join_queue(request, pk):
+    context = {}
+    if request.method == "POST":
+        student_question = request.POST["student_question"]
+        course = get_object_or_404(Course, pk=pk)
+        if Queue.objects.filter(course=course, student=request.user.student).count() > 0:
+            # joined queue, change student question
+            print("change here")
+            queue = Queue.objects.filter(course=course, student=request.user.student).all()[0]
+            queue.question = student_question
+            queue.save()
+        else: # haven't joined queue
+            Queue.objects.create(course=course, student=request.user.student, \
+                question=student_question)
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        return render(request, "ohq/manage_account.html", context)
+
+def change_queue_status(request, pk):
+    if request.method == "POST":
+        course = get_object_or_404(Course, pk=pk)
+        is_instructor = check_is_instructor(request.user, course)
+        if is_instructor:
+            course.status = not course.status
+            course.save()
+    return redirect(request.META['HTTP_REFERER'])
