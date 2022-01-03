@@ -82,6 +82,7 @@ class CourseQueueView(generic.DetailView):
                 temp = {}
                 temp["first_name"] = q.student.user.first_name
                 temp["question"] = q.question
+                temp["queue_checkbox_id"] = q.student.user.username
                 result.append(temp)
             return result
         context = super().get_context_data(**kwargs)
@@ -102,8 +103,6 @@ class CourseQueueView(generic.DetailView):
                 joined_time = queue_obj.joined_time
                 context["number_in_queue"] = get_position_in_queue(self.request.user, course, joined_time)
                 context["student_question"] = queue_obj.question
-                # TODO: look here before making the form
-                context["queue_checkbox_id"] = queue_obj.student.user.username # unique id
         return context
 
 
