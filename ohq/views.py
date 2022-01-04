@@ -263,6 +263,10 @@ def join_queue(request, pk):
 def invite_student(request, pk):
     context = {}
     if request.method == "POST":
+        course = get_object_or_404(Course, pk=pk)
+        
+        queues = Queue.objects.filter(course=course, 
+        
         student_question = request.POST["student_question"]
         course = get_object_or_404(Course, pk=pk)
         if Queue.objects.filter(course=course, student=request.user.student).count() > 0:
