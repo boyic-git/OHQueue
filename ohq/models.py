@@ -68,6 +68,9 @@ class Queue(models.Model):
     instructor = models.ManyToManyField(Instructor)
     question = models.CharField(max_length=500, default="")
     joined_time = models.DateTimeField(auto_now_add=True)
+    ## if invited, not showing in instructor's waiting student queue,
+    ## but showing in the serving queue
+    invited = models.BooleanField(default=False)
 
     def __str__(self):
         return self.course.code + ": " + self.student.user.first_name \
@@ -78,4 +81,4 @@ class SubQueue(models.Model):
     sub_queue = models.ManyToManyField(Queue)
     # student = models.ManyToManyField(Student)
     instructor = models.ManyToManyField(Instructor)
-    question = models.CharField(max_length=500, default="")
+    # question = models.CharField(max_length=500, default="")

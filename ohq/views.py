@@ -89,6 +89,8 @@ class CourseQueueView(generic.DetailView):
         def get_subqueue(course):
             result = []
             query_set = SubQueue.objects.filter(course=course, instructor=self.request.user.instructor).order_by("sub_queue__joined_time").all()
+            if len(query_set) == 0:
+                return result
             sub_queue = query_set[0].sub_queue.all()
             for q in sub_queue:
                 print(q)
@@ -287,16 +289,12 @@ def invite_students(request, pk):
             username = q.student.user.username
             if request.POST[username] == "yes":
                 sub_queue.sub_queue.add(q)
-                if len(question) + len(q.question) + 1 < SubQueue.question.field.max_length:
-                    question += q.question + "\n"
-        sub_queue.question = question
+                q.invited = True
+                q.save()
         sub_queue.save()
         if sub_queue.sub_queue.count() == 0:
             sub_queue.delete()
-        # print(sub_queue.sub_queue)
-                
-        
-        
+        return redirect(request.META['HTTP_REFERER'])       
     else:
         return render(request, "ohq/manage_account.html", context)
 
