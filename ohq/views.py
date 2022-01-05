@@ -1,7 +1,7 @@
 from django.db.models import constraints
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import Student, Instructor, Course, Queue
+from .models import Student, Instructor, Course, Queue, SubQueue
 from django.contrib.auth.models import User, UserManager
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -85,12 +85,27 @@ class CourseQueueView(generic.DetailView):
                 temp["queue_checkbox_id"] = q.student.user.username
                 result.append(temp)
             return result
+
+        def get_subqueue(course):
+            result = []
+            query_set = SubQueue.objects.filter(course=course, instructor=self.request.user.instructor).order_by("sub_queue__joined_time").all()
+            sub_queue = query_set[0].sub_queue.all()
+            for q in sub_queue:
+                print(q)
+                temp = {}
+                temp["first_name"] = q.student.user.first_name
+                temp["question"] = q.question
+                temp["queue_checkbox_id"] = q.student.user.username
+                result.append(temp)
+            return result
+
         context = super().get_context_data(**kwargs)
         course = get_object_or_404(Course, pk=self.kwargs["pk"])
         is_instructor = check_is_instructor(self.request.user, course)
         if is_instructor:
             context["is_instructor"] = is_instructor
             context["queue"] = get_queue(course)
+            context["sub_queue"] = get_subqueue(course)
         else:
             is_joined = check_is_joined(self.request.user, course)
             if not is_joined:
@@ -260,25 +275,28 @@ def join_queue(request, pk):
 
 
 # TODO: new stuff
-def invite_student(request, pk):
+def invite_students(request, pk):
     context = {}
     if request.method == "POST":
         course = get_object_or_404(Course, pk=pk)
+        queues = Queue.objects.filter(course=course).all()
+        sub_queue = SubQueue.objects.create(course=course)
+        sub_queue.instructor.add(request.user.instructor)
+        question = ""
+        for q in queues:
+            username = q.student.user.username
+            if request.POST[username] == "yes":
+                sub_queue.sub_queue.add(q)
+                if len(question) + len(q.question) + 1 < SubQueue.question.field.max_length:
+                    question += q.question + "\n"
+        sub_queue.question = question
+        sub_queue.save()
+        if sub_queue.sub_queue.count() == 0:
+            sub_queue.delete()
+        # print(sub_queue.sub_queue)
+                
         
-        queues = Queue.objects.filter(course=course, 
         
-        student_question = request.POST["student_question"]
-        course = get_object_or_404(Course, pk=pk)
-        if Queue.objects.filter(course=course, student=request.user.student).count() > 0:
-            # joined queue, change student question
-            print("change here")
-            queue = Queue.objects.filter(course=course, student=request.user.student).all()[0]
-            queue.question = student_question
-            queue.save()
-        else: # haven't joined queue
-            Queue.objects.create(course=course, student=request.user.student, \
-                question=student_question)
-        return redirect(request.META['HTTP_REFERER'])
     else:
         return render(request, "ohq/manage_account.html", context)
 

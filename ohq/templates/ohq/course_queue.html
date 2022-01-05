@@ -108,68 +108,75 @@
             {% if course.status %}
             <div class="container p-3 border bg-light">
               <h4>Current student(s) in office hour</h4>
-              <button type="button" class="btn btn-primary">Next Student</button>
-              <button type="button" class="btn btn-secondary" disabled>Put Back
-                Selected Student</button>
-              <table class="table table-striped mt-2">
-                <thead>
-                  <tr>
-                    <th style="width: 10%">Select</th>
-                    <th style="width: 20%">Name</th>
-                    <th style="width: 70%">Question</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <form action="">
+                {% csrf_token %}
+                <button type="button" class="btn btn-primary">Next Student</button>
+                <button type="button" class="btn btn-secondary" disabled>Put Back
+                  Selected Student</button>
+                <table class="table table-striped mt-2">
+                  <thead>
+                    <tr>
+                      <th style="width: 10%">Select</th>
+                      <th style="width: 20%">Name</th>
+                      <th style="width: 70%">Question</th>
+                    </tr>
+                  </thead>
+                  <tbody>
 
-
-                  {% for name in queue %}
-                  <tr>
-                    <td>
-                      <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input"
-                          id="{{name.queue_checkbox_id}}" name="{{name.queue_checkbox_id}}">
-                      </div>
-                    </td>
-                    <td>{{ name.first_name }}</td>
-                    <td>{{ name.question }}</td>
-                  </tr>
-                  {% endfor %}
-
-                  
-                </tbody>
-              </table>
+                    {% for name in sub_queue %}
+                    <tr>
+                      <td>
+                        <div class="form-group form-check">
+                          <input type="checkbox" class="form-check-input"
+                            id="{{name.queue_checkbox_id}}" name="{{name.queue_checkbox_id}}">
+                        </div>
+                      </td>
+                      <td>{{ name.first_name }}</td>
+                      <td>{{ name.question }}</td>
+                    </tr>
+                    {% endfor %}
+                    
+                  </tbody>
+                </table>
+              </form>
             </div>
 
             <!-- Students in queue -->
             <div class="container p-3 border bg-light">
               <h4>Students in queue</h4>
-              <button type="button" class="btn btn-primary">Invite Selected
-                Students</button>
-              <table class="table table-striped mt-2">
-                <thead>
-                  <tr>
-                    <th style="width: 10%">Select</th>
-                    <th style="width: 20%">Name</th>
-                    <th style="width: 70%">Question</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  
-                  {% for name in queue %}
-                  <tr>
-                    <td>
-                      <div class="form-group form-check">
-                        <input type="checkbox" class="form-check-input"
-                          id="exampleCheck1">
-                      </div>
-                    </td>
-                    <td>{{ name.first_name }}</td>
-                    <td>{{ name.question }}</td>
-                  </tr>
-                  {% endfor %}
-
-                </tbody>
-              </table>
+              <form action="{{ course.id }}/invite_students" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Invite Selected
+                  Students</button>
+                <table class="table table-striped mt-2">
+                  <thead>
+                    <tr>
+                      <th style="width: 10%">Select</th>
+                      <th style="width: 20%">Name</th>
+                      <th style="width: 70%">Question</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                    {% for name in queue %}
+                    <tr>
+                      <td>
+                        <div class="form-group form-check">
+                          <input type="hidden" class="form-check-input"
+                            id={{name.queue_checkbox_id}} name="{{name.queue_checkbox_id}}"
+                            value="no">
+                          <input type="checkbox" class="form-check-input"
+                            id={{name.queue_checkbox_id}} name="{{name.queue_checkbox_id}}"
+                            value="yes">
+                        </div>
+                      </td>
+                      <td>{{ name.first_name }}</td>
+                      <td>{{ name.question }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </form>
             </div>
 
             <!-- Office hour is off -->
