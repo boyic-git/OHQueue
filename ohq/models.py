@@ -76,9 +76,3 @@ class Queue(models.Model):
         return self.course.code + ": " + self.student.user.first_name \
             + " " + self.student.user.last_name
 
-class SubQueue(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    sub_queue = models.ManyToManyField(Queue)
-    # student = models.ManyToManyField(Student)
-    instructor = models.ManyToManyField(Instructor)
-    # question = models.CharField(max_length=500, default="")

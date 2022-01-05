@@ -1,7 +1,7 @@
 from django.db.models import constraints
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from .models import Student, Instructor, Course, Queue, SubQueue
+from .models import Student, Instructor, Course, Queue
 from django.contrib.auth.models import User, UserManager
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse

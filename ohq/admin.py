@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group, User
-from .models import Student, Instructor, Course, Queue, SubQueue
+from .models import Student, Instructor, Course, Queue
 
 # class UserAdmin(admin.ModelAdmin):
 #     fields = ["user", "first_name"]
@@ -41,4 +41,3 @@ admin.site.register(Student, UserAdmin)
 admin.site.register(Instructor, UserAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Queue, QueueAdmin)
-admin.site.register(SubQueue)
