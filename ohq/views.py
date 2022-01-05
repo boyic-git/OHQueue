@@ -264,7 +264,6 @@ def join_queue(request, pk):
         course = get_object_or_404(Course, pk=pk)
         if Queue.objects.filter(course=course, student=request.user.student).count() > 0:
             # joined queue, change student question
-            print("change here")
             queue = Queue.objects.filter(course=course, student=request.user.student).all()[0]
             queue.question = student_question
             queue.save()
@@ -288,32 +287,30 @@ def invite_students(request, pk):
                 q.delete()
             else:
                 username = q.student.user.username
-                print(request.POST[username])
                 if request.POST[username] == "yes":
                     q.instructor.add(request.user.instructor)
                     q.invited = True
                     q.save()
         return redirect(request.META['HTTP_REFERER'])       
     else:
-        return render(request, "ohq/manage_account.html", context)
+        return redirect("ohq:index")
 
 def next_student(request, pk):
     context = {}
     if request.method == "POST":
         course = get_object_or_404(Course, pk=pk)
-        queues = Queue.objects.filter(course=course).all()
-        sub_queue = SubQueue.objects.create(course=course)
-        sub_queue.instructor.add(request.user.instructor)
-        question = ""
-        for q in queues:
-            username = q.student.user.username
-            if request.POST[username] == "yes":
-                sub_queue.sub_queue.add(q)
-                q.invited = True
-                q.save()
-        sub_queue.save()
-        if sub_queue.sub_queue.count() == 0:
-            sub_queue.delete()
-        return redirect(request.META['HTTP_REFERER'])       
+        previous_students = Queue.objects.filter(course=course, invited=True).all()
+        next_students = Queue.objects.filter(course=course, invited=False).order_by("joined_time").all()
+        for q in previous_students:
+                if q.invited:
+                    q.delete()
+        if len(next_students) == 0:
+            return redirect(request.META['HTTP_REFERER'])
+        else:
+            next_student = next_students[0]
+            next_student.instructor.add(request.user.instructor)
+            next_student.invited = True
+            next_student.save()
+            return redirect(request.META['HTTP_REFERER'])       
     else:
-        return render(request, "ohq/manage_account.html", context)
+        return redirect("ohq:index")

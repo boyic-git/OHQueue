@@ -108,9 +108,9 @@
             {% if course.status %}
             <div class="container p-3 border bg-light">
               <h4>Current student(s) in office hour</h4>
-              <form action="">
+              <form action="{{ course.id }}/next_student" method="post">
                 {% csrf_token %}
-                <button type="button" class="btn btn-primary">Next Student</button>
+                <button type="submit" class="btn btn-primary">Next Student</button>
                 <button type="button" class="btn btn-secondary" disabled>Put Back
                   Selected Student</button>
                 <table class="table table-striped mt-2">
