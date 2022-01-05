@@ -26,8 +26,8 @@ class CourseAdmin(admin.ModelAdmin):
         return str(obj)
 
 class QueueAdmin(admin.ModelAdmin):
-    list_display = ["course__code", "student", "question", "joined_time"]
-    fields = ["course", "student", "question", "joined_time", "invited"]
+    list_display = ["course__code", "student", "question", "invited", "joined_time"]
+    fields = ["course", "student", "question", "joined_time", "invited", "instructor"]
     readonly_fields = ["joined_time"]
 
     def course__code(self, obj):

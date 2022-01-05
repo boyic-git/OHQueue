@@ -83,21 +83,21 @@ class CourseQueueView(generic.DetailView):
                 temp["first_name"] = q.student.user.first_name
                 temp["question"] = q.question
                 temp["queue_checkbox_id"] = q.student.user.username
+                temp["invited"] = q.invited
                 result.append(temp)
             return result
 
         def get_subqueue(course):
             result = []
-            query_set = SubQueue.objects.filter(course=course, instructor=self.request.user.instructor).order_by("sub_queue__joined_time").all()
+            query_set = Queue.objects.filter(course=course, instructor=self.request.user.instructor).order_by("joined_time").all()
             if len(query_set) == 0:
                 return result
-            sub_queue = query_set[0].sub_queue.all()
-            for q in sub_queue:
-                print(q)
+            for q in query_set:
                 temp = {}
                 temp["first_name"] = q.student.user.first_name
                 temp["question"] = q.question
                 temp["queue_checkbox_id"] = q.student.user.username
+                temp["invited"] = q.invited
                 result.append(temp)
             return result
 
@@ -276,8 +276,28 @@ def join_queue(request, pk):
         return render(request, "ohq/manage_account.html", context)
 
 
-# TODO: new stuff
+# TODO: need to remove currently serving students before inviting new students
+# from queue
 def invite_students(request, pk):
+    context = {}
+    if request.method == "POST":
+        course = get_object_or_404(Course, pk=pk)
+        queues = Queue.objects.filter(course=course).all()
+        for q in queues:
+            if q.invited:
+                q.delete()
+            else:
+                username = q.student.user.username
+                print(request.POST[username])
+                if request.POST[username] == "yes":
+                    q.instructor.add(request.user.instructor)
+                    q.invited = True
+                    q.save()
+        return redirect(request.META['HTTP_REFERER'])       
+    else:
+        return render(request, "ohq/manage_account.html", context)
+
+def next_student(request, pk):
     context = {}
     if request.method == "POST":
         course = get_object_or_404(Course, pk=pk)
@@ -297,12 +317,3 @@ def invite_students(request, pk):
         return redirect(request.META['HTTP_REFERER'])       
     else:
         return render(request, "ohq/manage_account.html", context)
-
-def change_queue_status(request, pk):
-    if request.method == "POST":
-        course = get_object_or_404(Course, pk=pk)
-        is_instructor = check_is_instructor(request.user, course)
-        if is_instructor:
-            course.status = not course.status
-            course.save()
-    return redirect(request.META['HTTP_REFERER'])

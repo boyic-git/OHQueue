@@ -124,6 +124,7 @@
                   <tbody>
 
                     {% for name in sub_queue %}
+                    {% if name.invited %}
                     <tr>
                       <td>
                         <div class="form-group form-check">
@@ -134,6 +135,7 @@
                       <td>{{ name.first_name }}</td>
                       <td>{{ name.question }}</td>
                     </tr>
+                    {% endif %}
                     {% endfor %}
                     
                   </tbody>
@@ -159,6 +161,7 @@
                   <tbody>
                     
                     {% for name in queue %}
+                    {% if not name.invited %}
                     <tr>
                       <td>
                         <div class="form-group form-check">
@@ -173,6 +176,7 @@
                       <td>{{ name.first_name }}</td>
                       <td>{{ name.question }}</td>
                     </tr>
+                    {% endif %}
                     {% endfor %}
                   </tbody>
                 </table>
