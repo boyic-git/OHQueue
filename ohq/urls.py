@@ -20,5 +20,6 @@ urlpatterns = [
     path("course/<int:pk>/invite_students", views.invite_students, name="invite_students"),
     path("course/<int:pk>/next_student", views.next_student, name="next_student"),
     path("course/<int:pk>/put_back", views.put_back, name="put_back"),
+    path("course/<int:pk>/clear_queue", views.clear_queue, name="clear_queue"),
 
     ]

@@ -329,3 +329,14 @@ def put_back(request, pk):
         return redirect(request.META['HTTP_REFERER'])       
     else:
         return redirect("ohq:index")
+
+def clear_queue(request, pk):
+    context = {}
+    if request.method == "POST":
+        course = get_object_or_404(Course, pk=pk)
+        queues = Queue.objects.filter(course=course).all()
+        for q in queues:
+            q.delete()
+        return redirect(request.META['HTTP_REFERER'])       
+    else:
+        return redirect("ohq:index")
