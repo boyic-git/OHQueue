@@ -27,7 +27,7 @@ class CourseAdmin(admin.ModelAdmin):
 
 class QueueAdmin(admin.ModelAdmin):
     list_display = ["course__code", "student", "question", "invited", "joined_time"]
-    fields = ["course", "student", "question", "joined_time", "invited", "instructor"]
+    fields = ["course", "student", "question", "joined_time", "invited", ]
     readonly_fields = ["joined_time"]
 
     def course__code(self, obj):

@@ -111,8 +111,11 @@
               <form action="{{ course.id }}/next_student" method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary">Next Student</button>
-                <button type="button" class="btn btn-secondary" disabled>Put Back
-                  Selected Student</button>
+                {% if sub_queue|length != 0 %}
+                <button type="submit" class="btn btn-secondary" formaction="{{ course.id }}/put_back">Put Back Selected Student</button>
+                {% else %}
+                <button type="submit" class="btn btn-secondary" disabled>Put Back Selected Student</button>
+                {% endif %}
                 <table class="table table-striped mt-2">
                   <thead>
                     <tr>
@@ -128,8 +131,12 @@
                     <tr>
                       <td>
                         <div class="form-group form-check">
+                          <input type="hidden" class="form-check-input"
+                            id={{name.queue_checkbox_id}} name="{{name.queue_checkbox_id}}"
+                            value="no">
                           <input type="checkbox" class="form-check-input"
-                            id="{{name.queue_checkbox_id}}" name="{{name.queue_checkbox_id}}">
+                            id="{{name.queue_checkbox_id}}" name="{{name.queue_checkbox_id}}"
+                            value="yes">
                         </div>
                       </td>
                       <td>{{ name.first_name }}</td>

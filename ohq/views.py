@@ -314,3 +314,18 @@ def next_student(request, pk):
             return redirect(request.META['HTTP_REFERER'])       
     else:
         return redirect("ohq:index")
+
+def put_back(request, pk):
+    context = {}
+    if request.method == "POST":
+        course = get_object_or_404(Course, pk=pk)
+        queues = Queue.objects.filter(course=course, invited=True).all()
+        for q in queues:
+            username = q.student.user.username
+            if request.POST[username] == "yes":
+                q.instructor.remove(request.user.instructor)
+                q.invited = False
+                q.save()
+        return redirect(request.META['HTTP_REFERER'])       
+    else:
+        return redirect("ohq:index")
