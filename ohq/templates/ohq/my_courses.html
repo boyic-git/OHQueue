@@ -84,20 +84,18 @@
     </nav>
 
       <div class="container-fluid mt-2">
-        <h2>Search results for "{{ search_query }}": </h2>
-        {% if no_result %}
-        <div class="alert alert-warning mt-2"> <!--Style the message paragraph with .alert and .alert-warning class -->
-          {{ no_result }}
-        </div>
-        {% else %}
+        <h2>My Courses (teaching and starred)</h2>
         <div class="card-columns-vertical">
           {% for course in course_list %}
           <div class="card mt-2">
             <div class="card-header">
               <div class="row justify-content-between">
                 <div class="col-11">
-                  <h4>
-                    <button type="button" class="btn btn-sm btn-light">
+                  
+                    <!-- show starred courses with a star or to star the course -->
+                  <form action="star_course" method="post">
+                    <h4>
+                    <button type="submit" class="btn btn-sm btn-light">
                       <svg xmlns="http://www.w3.org/2000/svg" width="22"
                         height="22"
                         fill="currentColor" class="bi bi-star" viewBox="0 0 16
@@ -117,7 +115,7 @@
                           0z"></path>
                       </svg>
                     </button>
-                    <button type="button" class="btn btn-sm btn-light">
+                    <button type="submit" class="btn btn-sm btn-light">
                       <svg xmlns="http://www.w3.org/2000/svg" width="22"
                         height="22"
                         fill="currentColor" class="bi bi-star-fill" viewBox="0 0
@@ -131,7 +129,8 @@
                       </svg>
                     </button>
                     {{ course.code }}: {{ course.course_name }} {{ course.pk }}
-                  </h4>
+                    </h4>
+                  </form>
                 </div>
                 <div class="col-1">
                   <input type=button class="btn btn-primary"
@@ -139,6 +138,8 @@
                     value='Join'>
                 </div>
               </div>
+
+
             </div>
             <div class="card-body">
               <p>
@@ -152,7 +153,6 @@
           </div>
           {% endfor %}
         </div>
-        {% endif %}
       </div>
 
     </body>

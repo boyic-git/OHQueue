@@ -20,7 +20,7 @@ class UserAdmin(admin.ModelAdmin):
 class CourseAdmin(admin.ModelAdmin):
     search_fields = ["code", "course_name", ]
     list_display = ["full_course_name", "code", "course_name", "semester", ]
-    fields = ["code", "course_name", "semester", "status", ]
+    fields = ["code", "course_name", "semester", "status", "teaching_instructor"]
     
     def full_course_name(self, obj):
         return str(obj)

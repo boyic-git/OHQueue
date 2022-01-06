@@ -108,11 +108,11 @@
             {% if course.status %}
             <div class="container p-3 border bg-light">
               <h4>Current student(s) in office hour</h4>
-              <form action="{{ course.id }}/next_student" method="post">
+              <form action="{{ course.pk }}/next_student" method="post">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-primary">Next Student</button>
                 {% if sub_queue|length != 0 %}
-                <button type="submit" class="btn btn-secondary" formaction="{{ course.id }}/put_back">Put Back Selected Student</button>
+                <button type="submit" class="btn btn-secondary" formaction="{{ course.pk }}/put_back">Put Back Selected Student</button>
                 {% else %}
                 <button type="submit" class="btn btn-secondary" disabled>Put Back Selected Student</button>
                 {% endif %}
@@ -153,7 +153,7 @@
             <!-- Students in queue -->
             <div class="container p-3 border bg-light">
               <h4>Students in queue</h4>
-              <form action="{{ course.id }}/invite_students" method="post">
+              <form action="{{ course.pk }}/invite_students" method="post">
                 {% csrf_token %}
                   <button type="submit" class="btn btn-primary">Invite Selected
                     Students</button>
@@ -174,7 +174,7 @@
                         </div>
                         <div class="modal-footer">
                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                          <button type="submit" class="btn btn-danger" formaction="{{ course.id }}/clear_queue">Confirm</button>
+                          <button type="submit" class="btn btn-danger" formaction="{{ course.pk }}/clear_queue">Confirm</button>
                         </div>
                       </div>
                     </div>
@@ -229,7 +229,7 @@
               </h4>
 
               {% if course.status %}
-              <form action="{{ course.id }}/change_status" method="post">
+              <form action="{{ course.pk }}/change_status" method="post">
                 {% csrf_token %}
                 <div class="btn-group" role="group">
                   <button class="btn btn-primary" type="submit" disabled>On</button>
@@ -238,7 +238,7 @@
               </form>
 
               <div class="mt-2">
-                <form action="{{ course.id }}/meeting_link" method="post">
+                <form action="{{ course.pk }}/meeting_link" method="post">
                   {% csrf_token %}
                   <label for="meeting_link">
                   Meeting Link: (ignore if you have already told students where the office hour is holding)
@@ -259,7 +259,7 @@
               </div>
 
               {% else %}
-              <form action="{{ course.id }}/change_status" method="post">
+              <form action="{{ course.pk }}/change_status" method="post">
                 {% csrf_token %}
                 <div class="btn-group" role="group">
                   <button class="btn btn-primary" type="submit">On</button>
@@ -280,14 +280,14 @@
                 <!-- Current student -->
                 <div class="container-fluid p-3 border bg-light">
                   <h4>You are in queue! There are <b>{{ number_in_queue }}</b> students before you.</h4>
-                  <form action="{{ course.id }}/join_queue" method="post">
+                  <form action="{{ course.pk }}/join_queue" method="post">
                     {% csrf_token %}
                     <label for="student_question">Write down your question(s):</label>
                     <textarea name="student_question" id="student_question" 
                       class="form-control" rows="2" placeholder="E.g. how many stars in the universe?">{{student_question}}
                     </textarea>
                     <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
-                    <button type="submit" formaction="{{ course.id }}/quit_queue" 
+                    <button type="submit" formaction="{{ course.pk }}/quit_queue" 
                       class="btn btn-danger mt-2">Quit Queue</button>
                   </form>
                 </div>
@@ -298,13 +298,13 @@
                 <!-- Current student -->
                 <div class="container-fluid p-3 border bg-light">
                   <h4>You are not in queue. There are <b>{{ number_in_queue }}</b> students in queue.</h4>
-                  <form action="{{ course.id }}/join_queue" method="post">
+                  <form action="{{ course.pk }}/join_queue" method="post">
                     {% csrf_token %}
                     <label for="student_question">Write down your question(s):</label>
                     <textarea name="student_question" id="student_question" 
                       class="form-control" rows="2" placeholder="E.g. how many stars in the universe?"></textarea>
                     <button type="submit" class="btn btn-primary mt-2">Join Queue</button>
-                    <button type="submit" formaction="{{ course.id }}/quit_queue" 
+                    <button type="submit" formaction="{{ course.pk }}/quit_queue" 
                       class="btn btn-secondary mt-2" disabled>Quit Queue</button>
                   </form>
                 </div>

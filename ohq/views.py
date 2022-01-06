@@ -12,12 +12,53 @@ import re
 # Create your views here.
 class CourseListView(generic.ListView):
     model = Course
-    template_name = "course_list.html"
+    template_name = "ohq/course_list.html"
     context_object_name = "course_list"
 
-    # def get_queryset(self):
-    #     courses = Course.objects.all()
-    #     return courses
+    def get_teaching_courses(self):
+        is_instructor = Instructor.objects.filter(user=self.request.user).count()
+        # at least teaching one courses
+        if is_instructor:
+            query = Instructor.objects.filter(user=self.request.user)\
+                .all()[0].teaching_course.all()
+            return query
+        return []
+    
+    def get_starred_courses(self):
+        return Student.objects.filter(user=self.request.user).all()[0]\
+            .starred_course.all()
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # preferred_courses are the courses being taught or starred by the user
+        preferred_courses = self.get_teaching_courses() | self.get_starred_courses()
+        rest_courses = Course.objects.all().difference(preferred_courses)
+        context["preferred_courses"] = preferred_courses
+        context["rest_courses"] = rest_courses
+        return context
+
+class MyCourseListView(generic.ListView):
+    model = Course
+    template_name = "ohq/my_courses.html"
+    context_object_name = "course_list"
+
+    def get_teaching_courses(self):
+        is_instructor = Instructor.objects.filter(user=self.request.user).count()
+        # at least teaching one courses
+        if is_instructor:
+            query = Instructor.objects.filter(user=self.request.user)\
+                .all()[0].teaching_course.all()
+            return query
+        return []
+    
+    def get_starred_courses(self):
+        return Student.objects.filter(user=self.request.user).all()[0]\
+            .starred_course.all()
+    
+    def get_queryset(self):
+        courses = self.get_teaching_courses()
+        courses = courses | self.get_starred_courses()
+        return courses
 
 def search(request):
     if request.method == "POST":
@@ -337,6 +378,20 @@ def clear_queue(request, pk):
         queues = Queue.objects.filter(course=course).all()
         for q in queues:
             q.delete()
+        return redirect(request.META['HTTP_REFERER'])       
+    else:
+        return redirect("ohq:index")
+
+def star_course(request, pk):
+    context = {}
+    if request.method == "POST":
+        course = get_object_or_404(Course, pk=pk)
+        student = request.user.student
+        if Student.objects.filter(user=request.user, starred_course=course).count() > 0:
+            student.starred_course.remove(course)
+        else:
+            student.starred_course.add(course)
+        student.save()
         return redirect(request.META['HTTP_REFERER'])       
     else:
         return redirect("ohq:index")
