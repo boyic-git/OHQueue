@@ -20,10 +20,14 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">OHQueue</a>
-        <div class="btn-group" role="group">
-          <button type="button" class="btn btn-primary">My Courses</button>
-          <button type="button" class="btn btn-primary">About</button>
-        </div>
+        <form action="{% url 'ohq:my_courses' %}">
+          {% csrf_token %}
+          <div class="btn-group" role="group">
+            <button type="submit" class="btn btn-primary">My Courses</button>
+            <button type="button" class="btn btn-primary">About</button>
+          </div>
+        </form>
+        
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
           data-bs-target="#navbarSupportedContent"
           aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -34,7 +38,9 @@
           id="navbarSupportedContent">
           <form class="d-flex" action="{% url 'ohq:search' %}" method="post">
             {% csrf_token %}
-            <input class="form-control me-2" type="search" placeholder="Course e.g. CPEN502" aria-label="Search">
+            <input class="form-control me-2" type="search" 
+            placeholder="Course e.g. CPEN502" aria-label="Search"
+            name="search_query">
             <button class="btn btn-success" type="submit">Search</button>
           </form>
 
