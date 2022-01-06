@@ -31,12 +31,17 @@ class CourseListView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # preferred_courses are the courses being taught or starred by the user
-        preferred_courses = self.get_teaching_courses() | self.get_starred_courses()
+        teaching_courses = self.get_teaching_courses()
+        starred_courses = self.get_starred_courses()
+        preferred_courses = teaching_courses | starred_courses
         rest_courses = Course.objects.all().difference(preferred_courses)
-        context["preferred_courses"] = preferred_courses
+        context["teaching_courses"] = teaching_courses
+        context["starred_courses"] = starred_courses
         context["rest_courses"] = rest_courses
         return context
 
+# TODO: Fix for mycourse
+# 2 seperate, one for teaching courses, one for starred
 class MyCourseListView(generic.ListView):
     model = Course
     template_name = "ohq/my_courses.html"
@@ -55,19 +60,45 @@ class MyCourseListView(generic.ListView):
         return Student.objects.filter(user=self.request.user).all()[0]\
             .starred_course.all()
     
-    def get_queryset(self):
-        courses = self.get_teaching_courses()
-        courses = courses | self.get_starred_courses()
-        return courses
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # preferred_courses are the courses being taught or starred by the user
+        teaching_courses = self.get_teaching_courses()
+        starred_courses = self.get_starred_courses()
+        context["teaching_courses"] = teaching_courses
+        context["starred_courses"] = starred_courses
+        return context
 
-def search(request):
+def prepare_search(request):
     if request.method == "POST":
+        context = {}
+        query = request.POST["search_query"]
+        url = "search/q={}".format(query)
+        return redirect(url)
+
+    else:
+        return render(request, "ohq/course_list.html")
+
+def search(request, query):
+    def get_teaching_courses():
+        is_instructor = Instructor.objects.filter(user=request.user).count()
+        # at least teaching one courses
+        if is_instructor:
+            query = Instructor.objects.filter(user=request.user)\
+                .all()[0].teaching_course.all()
+            return query
+        return []
+    
+    def get_starred_courses():
+        return Student.objects.filter(user=request.user).all()[0]\
+            .starred_course.all()
+
+    if request.method == "GET":
         context = {}
         template = "ohq/search_result.html"
 
-        query = request.POST["search_query"]
         context["search_query"] = query
-        subject, number, session = re.compile("([a-zA-Z]+)?([0-9]+)?([a-zA-Z]+)?").match(query).groups()
+        subject, number, _session = re.compile("([a-zA-Z]+)?([0-9]+)?([a-zA-Z]+)?").match(query).groups()
         course_list = None
 
         if subject:
@@ -81,8 +112,13 @@ def search(request):
 
         if len(course_list) == 0:
             context["no_result"] = "No results for {}, try another keywords".format(query)
-            
-        context["course_list"] = course_list
+        
+        teaching_courses = get_teaching_courses()
+        starred_courses = get_starred_courses()
+        context["teaching_courses"] = teaching_courses.intersection(course_list)
+        context["starred_courses"] = starred_courses.intersection(course_list)
+        context["rest_courses"] = course_list.difference(teaching_courses, starred_courses)
+        # context["course_list"] = course_list
         return render(request, template, context)
 
     else:

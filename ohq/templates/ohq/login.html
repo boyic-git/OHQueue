@@ -35,7 +35,7 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end"
           id="navbarSupportedContent">
-          <form class="d-flex" action="{% url 'ohq:search' %}" method="post">
+          <form class="d-flex" action="{% url 'ohq:prepare_search' %}" method="post">
             {% csrf_token %}
             <input class="form-control me-2" type="search" 
             placeholder="Course e.g. CPEN502" aria-label="Search"

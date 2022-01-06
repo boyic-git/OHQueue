@@ -36,7 +36,7 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end"
           id="navbarSupportedContent">
-          <form class="d-flex" action="{% url 'ohq:search' %}" method="post">
+          <form class="d-flex" action="{% url 'ohq:prepare_search' %}" method="post">
             {% csrf_token %}
             <input class="form-control me-2" type="search" 
             placeholder="Course e.g. CPEN502" aria-label="Search"
@@ -96,14 +96,60 @@
       <div class="container-fluid mt-2">
         <h2>Courses</h2>
         <div class="card-columns-vertical">
-          {% for course in preferred_courses %}
+          {% for course in teaching_courses %}
           <div class="card mt-2">
             <div class="card-header">
               <div class="row justify-content-between">
                 <div class="col-11">
                   
                     <!-- show starred courses with a star or to star the course -->
-                  <form action="course/{{course.pk}}/star_course" method="post">
+                  <form action="/course/{{course.pk}}/star_course" method="post">
+                    {% csrf_token %}
+                    <h4>
+                      <button type="submit" class="btn btn-sm btn-light" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22"
+                          height="22"
+                          fill="currentColor" class="bi bi-star-fill" viewBox="0 0
+                          16 16" style="fill:gold">
+                          <path d="M3.612
+                            15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173
+                            6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927
+                            0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522
+                            3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389
+                            2.256z"></path>
+                        </svg>
+                      </button>
+                    {{ course.code }}: {{ course.course_name }} {{ course.pk }}
+                    </h4>
+                  </form>
+                </div>
+                <div class="col-1">
+                  <input type=button class="btn btn-primary"
+                    onClick="location.href='/course/{{ course.pk }}'"
+                    value='Join'>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <p>
+                {% if course.status %}
+                Office hour is happening now!
+                {% else %}
+                Queue closed.
+                {% endif %}
+              </p>
+            </div>
+          </div>
+          {% endfor %}
+
+          {% for course in starred_courses %}
+          <div class="card mt-2">
+            <div class="card-header">
+              <div class="row justify-content-between">
+                <div class="col-11">
+                  
+                    <!-- show starred courses with a star or to star the course -->
+                  <form action="/course/{{course.pk}}/star_course" method="post">
                     {% csrf_token %}
                     <h4>
                     <button type="submit" class="btn btn-sm btn-light">
@@ -125,7 +171,7 @@
                 </div>
                 <div class="col-1">
                   <input type=button class="btn btn-primary"
-                    onClick="location.href='course/{{ course.pk }}'"
+                    onClick="location.href='/course/{{ course.pk }}'"
                     value='Join'>
                 </div>
               </div>
@@ -149,7 +195,7 @@
                 <div class="col-11">
                   
                     <!-- show starred courses with a star or to star the course -->
-                  <form action="course/{{course.pk}}/star_course" method="post">
+                  <form action="/course/{{course.pk}}/star_course" method="post">
                     {% csrf_token %}
                     <h4>
                     <button type="submit" class="btn btn-sm btn-light">
@@ -178,7 +224,7 @@
                 </div>
                 <div class="col-1">
                   <input type=button class="btn btn-primary"
-                    onClick="location.href='course/{{ course.pk }}'"
+                    onClick="location.href='/course/{{ course.pk }}'"
                     value='Join'>
                 </div>
               </div>
