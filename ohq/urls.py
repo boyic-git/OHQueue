@@ -5,7 +5,8 @@ from . import views
 
 app_name = 'ohq'
 urlpatterns = [
-    path(route="", view=views.CourseListView.as_view(), name="index"),
+    path("", views.login_request, name="login"),
+    path("course", view=views.CourseListView.as_view(), name="index"),
     path("search", views.prepare_search, name="prepare_search"),
     path("search/q=<str:query>", views.search, name="search"),
     path("login_request", views.login_request, name="login_request"),

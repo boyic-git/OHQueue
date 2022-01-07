@@ -22,7 +22,7 @@ class CourseListView(generic.ListView):
             query = Instructor.objects.filter(user=self.request.user)\
                 .all()[0].teaching_course.all()
             return query
-        return []
+        return Course.objects.none()
     
     def get_starred_courses(self):
         return Student.objects.filter(user=self.request.user).all()[0]\
@@ -33,7 +33,7 @@ class CourseListView(generic.ListView):
         # preferred_courses are the courses being taught or starred by the user
         teaching_courses = self.get_teaching_courses()
         starred_courses = self.get_starred_courses()
-        preferred_courses = teaching_courses | starred_courses
+        preferred_courses = teaching_courses.union(starred_courses)
         rest_courses = Course.objects.all().difference(preferred_courses)
         context["teaching_courses"] = teaching_courses
         context["starred_courses"] = starred_courses
@@ -230,6 +230,8 @@ def login_request(request):
             login(request, user)
             # http://localhost:8000/login_request
             if request.META['HTTP_REFERER'][-13:] == "login_request":
+                return redirect("ohq:index")
+            elif request.META['HTTP_REFERER'][-1] == "/":
                 return redirect("ohq:index")
             return redirect(request.META['HTTP_REFERER'])
         else:
