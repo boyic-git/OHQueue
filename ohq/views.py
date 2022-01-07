@@ -9,6 +9,11 @@ from django.views import generic
 from django.contrib.auth import login, logout, authenticate
 import re
 
+## TODO: need to add renew session cookie expiry time
+## also change the SESSION_COOKIE_AGE to a larger number
+## it is tested and working
+## https://stackoverflow.com/questions/3024153/how-to-expire-session-due-to-inactivity-in-django?rq=1
+
 # Create your views here.
 class CourseListView(generic.ListView):
     model = Course
@@ -229,11 +234,7 @@ def login_request(request):
         if user is not None:
             login(request, user)
             # http://localhost:8000/login_request
-            if request.META['HTTP_REFERER'][-13:] == "login_request":
-                return redirect("ohq:index")
-            elif request.META['HTTP_REFERER'][-1] == "/":
-                return redirect("ohq:index")
-            return redirect(request.META['HTTP_REFERER'])
+            return redirect("ohq:index")
         else:
             context["message"] = "Invalid username or password!"
             return render(request, "ohq/login.html", context)
@@ -242,7 +243,7 @@ def login_request(request):
 
 def logout_request(request):
     logout(request)
-    return redirect("ohq:index")
+    return redirect("ohq:login")
 
 def signup_request(request):
     context = {}
@@ -354,8 +355,6 @@ def join_queue(request, pk):
         return render(request, "ohq/manage_account.html", context)
 
 
-# TODO: need to remove currently serving students before inviting new students
-# from queue
 def invite_students(request, pk):
     context = {}
     if request.method == "POST":
