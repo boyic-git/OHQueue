@@ -11,7 +11,21 @@
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
       crossorigin="anonymous"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      // load queue status at id="queue_status"
+      function loadQueueStatus() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("queue_status").innerHTML =
+            this.responseText;
+          }
+        };
+        xhttp.open("GET", "/course/{{course.pk}}/ajax", true);
+        xhttp.send();
+      }
+    </script>
     <meta charset="UTF-8">
     <title>OHQueue</title>
   </head>
@@ -285,10 +299,35 @@
             {% if course.status %}
               {% if is_joined %}
               <!-- show student's position in queue -->
-              <div class="mx-auto">
-                <!-- Current student -->
-                <div class="container-fluid p-3 border bg-light">
-                  <h4>You are in queue! There are <b>{{ number_in_queue }}</b> students before you.</h4>
+                {% if not is_invited %}
+                  <div class="mx-auto">
+                    <!-- Current student -->
+                    <div class="container-fluid p-3 border bg-light">
+                      <div id="queue_status">
+                        <!-- calling views to generate specific views here -->
+                        <h4>You are in queue! There are <b>{{ number_in_queue }}</b> students before you.</h4>
+                        <form action="{{ course.pk }}/join_queue" method="post">
+                          {% csrf_token %}
+                          <label for="student_question">Write down your question(s):</label>
+                          <textarea name="student_question" id="student_question" 
+                            class="form-control" rows="2" placeholder="E.g. how many stars in the universe?">{{student_question}}
+                          </textarea>
+                          <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
+                          <button type="submit" formaction="{{ course.pk }}/quit_queue" 
+                            class="btn btn-danger mt-2">Quit Queue</button>
+                          <button type="button" id="refresh_queue" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div> 
+                {% else %}
+                  <h4>You are now invited to join the office hour. You can ask question now.</h4>
+                  {% if link %}
+                    <div class="alert alert-success" role="alert">
+                      You can join the Zoom meeting here: 
+                      <a href={{ link }}>{{ link }}</a>
+                    </div>
+                  {% endif %}
                   <form action="{{ course.pk }}/join_queue" method="post">
                     {% csrf_token %}
                     <label for="student_question">Write down your question(s):</label>
@@ -298,34 +337,39 @@
                     <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
                     <button type="submit" formaction="{{ course.pk }}/quit_queue" 
                       class="btn btn-danger mt-2">Quit Queue</button>
+                    <button type="button" id="refresh_queue" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
                   </form>
-                </div>
-              </div> 
+                {% endif %}
               {% else %}
               <!-- show join queue views -->
-              <div class="mx-auto">
-                <!-- Current student -->
-                <div class="container-fluid p-3 border bg-light">
-                  <h4>You are not in queue. There are <b>{{ number_in_queue }}</b> students in queue.</h4>
-                  <form action="{{ course.pk }}/join_queue" method="post">
-                    {% csrf_token %}
-                    <label for="student_question">Write down your question(s):</label>
-                    <textarea name="student_question" id="student_question" 
-                      class="form-control" rows="2" placeholder="E.g. how many stars in the universe?"></textarea>
-                    <button type="submit" class="btn btn-primary mt-2">Join Queue</button>
-                    <button type="submit" formaction="{{ course.pk }}/quit_queue" 
-                      class="btn btn-secondary mt-2" disabled>Quit Queue</button>
-                  </form>
-                </div>
-              </div> 
+                <div class="mx-auto">
+                  <!-- Current student -->
+                  <div class="container-fluid p-3 border bg-light">
+                    <div id="queue_status">
+                      <h4>You are not in queue. There are <b>{{ number_in_queue }}</b> students in queue.</h4>
+                      <form action="{{ course.pk }}/join_queue" method="post">
+                        {% csrf_token %}
+                        <label for="student_question">Write down your question(s):</label>
+                        <textarea name="student_question" id="student_question" 
+                          class="form-control" rows="2" placeholder="E.g. how many stars in the universe?"></textarea>
+                        <button type="submit" class="btn btn-primary mt-2">Join Queue</button>
+                        <button type="submit" formaction="{{ course.pk }}/quit_queue" 
+                          class="btn btn-secondary mt-2" disabled>Quit Queue</button>
+                        <button type="button" id="refresh_queue" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
+                      </form>
+                    </div>
+                  </div>
+                </div> 
               {% endif %}
             {% else %}
-            <div class="mx-auto">
-              <!-- not in queue-->
-              <div class="container-fluid p-3 border bg-light">
-                <h4>The office hour is not happening. Please contact your instructor.</h4>
-              </div>
-            </div> 
+              <div class="mx-auto">
+                <!-- not in queue-->
+                <div class="container-fluid p-3 border bg-light">
+                  <div id="queue_status">
+                    <h4>The office hour is not happening. Please contact your instructor.</h4>
+                  </div>
+                </div>
+              </div> 
             {% endif %}
           {% endif %}
         </div>

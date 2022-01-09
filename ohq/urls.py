@@ -19,10 +19,12 @@ urlpatterns = [
     path("course/<int:pk>/meeting_link", views.set_meeting_link, name="set_meeting_link"),
     path("course/<int:pk>", views.CourseQueueView.as_view(), name="course_queue"),
     path("course/<int:pk>/join_queue", views.join_queue, name="join_queue"),
+    path("course/<int:pk>/quit_queue", views.quit_queue, name="quit_queue"),
     path("course/<int:pk>/invite_students", views.invite_students, name="invite_students"),
     path("course/<int:pk>/next_student", views.next_student, name="next_student"),
     path("course/<int:pk>/put_back", views.put_back, name="put_back"),
     path("course/<int:pk>/clear_queue", views.clear_queue, name="clear_queue"),
     path("course/<int:pk>/star_course", views.star_course, name="star_course"),
+    path("course/<int:pk>/ajax", views.refresh_queue_view, name="refresh_queue_view"),
 
     ]

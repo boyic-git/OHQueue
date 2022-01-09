@@ -1,6 +1,6 @@
 from django.db.models import constraints
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from .models import Student, Instructor, Course, Queue
 from django.contrib.auth.models import User, UserManager
 from django.shortcuts import get_object_or_404, render, redirect
@@ -9,10 +9,6 @@ from django.views import generic
 from django.contrib.auth import login, logout, authenticate
 import re
 
-## TODO: need to add renew session cookie expiry time
-## also change the SESSION_COOKIE_AGE to a larger number
-## it is tested and working
-## https://stackoverflow.com/questions/3024153/how-to-expire-session-due-to-inactivity-in-django?rq=1
 
 # Create your views here.
 class CourseListView(generic.ListView):
@@ -211,6 +207,7 @@ class CourseQueueView(generic.DetailView):
         if not self.request.user.id:
             return context
         course = get_object_or_404(Course, pk=self.kwargs["pk"])
+        context["course_status"] = course.status
         is_instructor = check_is_instructor(self.request.user, course)
         if is_instructor:
             context["is_instructor"] = is_instructor
@@ -225,9 +222,12 @@ class CourseQueueView(generic.DetailView):
                 # only 1 queue object per user allowed
                 context["is_joined"] = True
                 queue_obj = get_object_or_404(Queue, student=self.request.user.student)
+                context["is_invited"] = queue_obj.invited
                 joined_time = queue_obj.joined_time
                 context["number_in_queue"] = get_position_in_queue(self.request.user, course, joined_time)
                 context["student_question"] = queue_obj.question
+                if queue_obj.invited:
+                    context["link"] = course.meeting_link
         self.request.session.set_expiry(self.request.session.get_expiry_age())
         return context
 
@@ -393,8 +393,22 @@ def join_queue(request, pk):
                 question=student_question)
         return redirect(request.META['HTTP_REFERER'])
     else:
-        return render(request, "ohq/manage_account.html", context)
+        return redirect("ohq:index")
 
+def quit_queue(request, pk):
+    if not request.user.id:
+        return redirect("ohq:login")
+    request.session.set_expiry(request.session.get_expiry_age())
+    context = {}
+    if request.method == "POST":
+        course = get_object_or_404(Course, pk=pk)
+        if Queue.objects.filter(course=course, student=request.user.student).count() > 0:
+            # joined queue, change student question
+            queue = Queue.objects.filter(course=course, student=request.user.student).all()[0]
+            queue.delete()
+        return redirect(request.META['HTTP_REFERER'])
+    else:
+        return redirect("ohq:index")
 
 def invite_students(request, pk):
     if not request.user.id:
@@ -487,3 +501,63 @@ def star_course(request, pk):
         return redirect(request.META['HTTP_REFERER'])       
     else:
         return redirect("ohq:index")
+
+## TODO: look here
+## NOTE: test the ajax view in a test page
+def refresh_queue_view(request, pk):
+    def get_queue(course):
+        result = []
+        query_set = Queue.objects.filter(course=course).order_by("joined_time").all()
+        for q in query_set:
+            temp = {}
+            temp["first_name"] = q.student.user.first_name
+            temp["question"] = q.question
+            temp["queue_checkbox_id"] = q.student.user.username
+            temp["invited"] = q.invited
+            result.append(temp)
+        return result
+
+    def get_subqueue(course):
+        result = []
+        query_set = Queue.objects.filter(course=course, instructor=request.user.instructor).order_by("joined_time").all()
+        if len(query_set) == 0:
+            return result
+        for q in query_set:
+            temp = {}
+            temp["first_name"] = q.student.user.first_name
+            temp["question"] = q.question
+            temp["queue_checkbox_id"] = q.student.user.username
+            temp["invited"] = q.invited
+            result.append(temp)
+        return result
+
+    context = {}
+    context["number"] = request.user.id
+    
+    if not request.user.id:
+        return context
+    course = get_object_or_404(Course, pk=pk)
+    context["course_status"] = course.status
+    context["course_pk"] = course.pk
+    is_instructor = check_is_instructor(request.user, course)
+    if is_instructor:
+        context["is_instructor"] = is_instructor
+        context["queue"] = get_queue(course)
+        context["sub_queue"] = get_subqueue(course)
+    else:
+        is_joined = check_is_joined(request.user, course)
+        if not is_joined:
+            context["is_joined"] = False
+            context["number_in_queue"] = get_number_in_queue(course)
+        else:
+            # only 1 queue object per user allowed
+            context["is_joined"] = True
+            queue_obj = get_object_or_404(Queue, student=request.user.student)
+            context["is_invited"] = queue_obj.invited
+            joined_time = queue_obj.joined_time
+            context["number_in_queue"] = get_position_in_queue(request.user, course, joined_time)
+            context["student_question"] = queue_obj.question
+            if queue_obj.invited:
+                context["link"] = course.meeting_link
+    request.session.set_expiry(request.session.get_expiry_age())
+    return render(request, "ohq/course_queue_status_student.html", context)
