@@ -93,7 +93,9 @@
     </nav>
 
       <div class="container-fluid mt-2">
+        {% if teaching_courses|length != 0 %}
         <h2>Courses I Teach</h2>
+        {% endif %}
         <div class="card-columns-vertical">
           {% for course in teaching_courses %}
           <div class="card mt-2">

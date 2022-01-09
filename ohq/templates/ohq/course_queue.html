@@ -13,6 +13,7 @@
       crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
+      window.onload = autoRefresh;
       // load queue status at id="queue_status"
       function loadQueueStatus() {
         var xhttp = new XMLHttpRequest();
@@ -24,6 +25,10 @@
         };
         xhttp.open("GET", "/course/{{course.pk}}/ajax", true);
         xhttp.send();
+      }
+      // auto refresh id="queue_status" by calling loadQueueStatus
+      function autoRefresh() {
+        setInterval("loadQueueStatus();", 10000);
       }
     </script>
     <meta charset="UTF-8">
@@ -295,6 +300,26 @@
           </div>
 
           {% else %}
+          <div class="modal fade" id="quit_queue_model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="quit_queue_model_label">Quit Queue?</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  You will lose your position in queue. Are you sure you want to quit?
+                </div>
+                <div class="modal-footer">
+                  <form action="{{ course.pk }}/quit_queue" method="post">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
           <!-- student view -->
             {% if course.status %}
               {% if is_joined %}
@@ -312,10 +337,13 @@
                           <textarea name="student_question" id="student_question" 
                             class="form-control" rows="2" placeholder="E.g. how many stars in the universe?">{{student_question}}
                           </textarea>
-                          <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
-                          <button type="submit" formaction="{{ course.pk }}/quit_queue" 
-                            class="btn btn-danger mt-2">Quit Queue</button>
-                          <button type="button" id="refresh_queue" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
+                          <div class="position-relative">
+                            <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
+                            <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#quit_queue_model">
+                              Quit Queue
+                            </button>
+                            <button type="button" id="refresh_queue" class="btn btn-primary mt-2 position-absolute top-0 end-0" onclick="loadQueueStatus()">Refresh</button>
+                          </div>
                         </form>
                       </div>
                     </div>
@@ -337,10 +365,13 @@
                           <textarea name="student_question" id="student_question" 
                             class="form-control" rows="2" placeholder="E.g. how many stars in the universe?">{{student_question}}
                           </textarea>
-                          <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
-                          <button type="submit" formaction="{{ course.pk }}/quit_queue" 
-                            class="btn btn-danger mt-2">Quit Queue</button>
-                          <button type="button" id="refresh_queue" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
+                          <div class="position-relative">
+                            <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
+                            <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#quit_queue_model">
+                              Quit Queue
+                            </button>
+                            <button type="button" id="refresh_queue" class="btn btn-primary mt-2 position-absolute top-0 end-0" onclick="loadQueueStatus()">Refresh</button>
+                          </div>
                         </form>
                       </div>
                     </div>
@@ -358,10 +389,13 @@
                         <label for="student_question">Write down your question(s):</label>
                         <textarea name="student_question" id="student_question" 
                           class="form-control" rows="2" placeholder="E.g. how many stars in the universe?"></textarea>
-                        <button type="submit" class="btn btn-primary mt-2">Join Queue</button>
-                        <button type="submit" formaction="{{ course.pk }}/quit_queue" 
-                          class="btn btn-secondary mt-2" disabled>Quit Queue</button>
-                        <button type="button" id="refresh_queue" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
+                        <div class="position-relative">
+                          <button type="submit" class="btn btn-primary mt-2">Join Queue</button>
+                          <button type="submit" formaction="{{ course.pk }}/quit_queue" 
+                            class="btn btn-secondary mt-2" disabled>Quit Queue</button>
+                          <button type="button" id="refresh_queue" class="btn btn-primary mt-2 position-absolute top-0 end-0" onclick="loadQueueStatus()">Refresh</button>
+                        </div>
+                        
                       </form>
                     </div>
                   </div>

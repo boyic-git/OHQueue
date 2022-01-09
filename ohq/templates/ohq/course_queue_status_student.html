@@ -9,10 +9,13 @@
         <textarea name="student_question" id="student_question" 
           class="form-control" rows="2" placeholder="E.g. how many stars in the universe?">{{student_question}}
         </textarea>
-        <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
-        <button type="submit" formaction="{{ course_pk }}/quit_queue" 
-          class="btn btn-danger mt-2">Quit Queue</button>
-        <button type="button" id="hide" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
+        <div class="position-relative">
+          <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
+          <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#quit_queue_model">
+            Quit Queue
+          </button>
+          <button type="button" id="refresh_queue" class="btn btn-primary mt-2 position-absolute top-0 end-0" onclick="loadQueueStatus()">Refresh</button>
+        </div>
       </form>
     {% else %}
       <h4>You are now invited to join the office hour. You can ask question now.</h4>
@@ -28,10 +31,13 @@
         <textarea name="student_question" id="student_question" 
           class="form-control" rows="2" placeholder="E.g. how many stars in the universe?">{{student_question}}
         </textarea>
-        <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
-        <button type="submit" formaction="{{ course_pk }}/quit_queue" 
-          class="btn btn-danger mt-2">Quit Queue</button>
-        <button type="button" id="hide" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
+        <div class="position-relative">
+          <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
+          <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#quit_queue_model">
+            Quit Queue
+          </button>
+          <button type="button" id="refresh_queue" class="btn btn-primary mt-2 position-absolute top-0 end-0" onclick="loadQueueStatus()">Refresh</button>
+        </div>
       </form>
     {% endif %}
   {% else %}
@@ -41,10 +47,12 @@
       <label for="student_question">Write down your question(s):</label>
       <textarea name="student_question" id="student_question" 
         class="form-control" rows="2" placeholder="E.g. how many stars in the universe?"></textarea>
-      <button type="submit" class="btn btn-primary mt-2">Join Queue</button>
-      <button type="submit" formaction="{{ course_pk }}/quit_queue" 
-        class="btn btn-secondary mt-2" disabled>Quit Queue</button>
-      <button type="button" id="hide" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
+        <div class="position-relative">
+          <button type="submit" class="btn btn-primary mt-2">Join Queue</button>
+          <button type="submit" formaction="{{ course.pk }}/quit_queue" 
+            class="btn btn-secondary mt-2" disabled>Quit Queue</button>
+          <button type="button" id="refresh_queue" class="btn btn-primary mt-2 position-absolute top-0 end-0" onclick="loadQueueStatus()">Refresh</button>
+        </div>
     </form>
   {% endif %}
 {% else %}
