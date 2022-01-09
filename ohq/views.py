@@ -50,8 +50,7 @@ class CourseListView(generic.ListView):
         self.request.session.set_expiry(self.request.session.get_expiry_age())
         return context
 
-# TODO: Fix for mycourse
-# 2 seperate, one for teaching courses, one for starred
+
 class MyCourseListView(generic.ListView):
     model = Course
     template_name = "ohq/my_courses.html"
@@ -64,7 +63,7 @@ class MyCourseListView(generic.ListView):
             query = Instructor.objects.filter(user=self.request.user)\
                 .all()[0].teaching_course.all()
             return query
-        return []
+        return Instructor.objects.none()
     
     def get_starred_courses(self):
         return Student.objects.filter(user=self.request.user).all()[0]\
@@ -92,6 +91,8 @@ def prepare_search(request):
     if request.method == "POST":
         context = {}
         query = request.POST["search_query"]
+        if not query or query.isspace():
+            query = " "
         url = "search/q={}".format(query)
         return redirect(url)
 
@@ -106,7 +107,7 @@ def search(request, query):
             query = Instructor.objects.filter(user=request.user)\
                 .all()[0].teaching_course.all()
             return query
-        return []
+        return Instructor.objects.none()
     
     def get_starred_courses():
         return Student.objects.filter(user=request.user).all()[0]\
@@ -118,27 +119,27 @@ def search(request, query):
         template = "ohq/search_result.html"
 
         context["search_query"] = query
-        subject, number, _session = re.compile("([a-zA-Z]+)?([0-9]+)?([a-zA-Z]+)?").match(query).groups()
-        course_list = None
-
-        if subject:
-            course_list = Course.objects.filter(code__istartswith=query).all()
+        course_list = Course.objects.none()
+        if query == " ":
+            context["no_result"] = "You are searching for empty keywords. Here are all the courses."
+            course_list = Course.objects.all()
         else:
-            if number:
-                course_list = Course.objects.filter(code__icontains=number).all()
-
+            subject, number, _session = re.compile("([a-zA-Z]+)?([0-9]+)?([a-zA-Z]+)?").match(query).groups()
+            if subject:
+                course_list = Course.objects.filter(code__istartswith=query).all()
+            else:
+                if number:
+                    course_list = Course.objects.filter(code__icontains=number).all()
+            if len(course_list) == 0:
+                context["no_result"] = "No results for {}, try another keywords".format(query)
         if len(course_list) == 0:
             course_list = Course.objects.filter(course_name__icontains=query).all()
-
-        if len(course_list) == 0:
-            context["no_result"] = "No results for {}, try another keywords".format(query)
         
         teaching_courses = get_teaching_courses()
         starred_courses = get_starred_courses()
         context["teaching_courses"] = teaching_courses.intersection(course_list)
         context["starred_courses"] = starred_courses.intersection(course_list)
         context["rest_courses"] = course_list.difference(teaching_courses, starred_courses)
-        # context["course_list"] = course_list
         return render(request, template, context)
 
     else:

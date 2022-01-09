@@ -98,7 +98,7 @@
         <div class="alert alert-warning mt-2"> <!--Style the message paragraph with .alert and .alert-warning class -->
           {{ no_result }}
         </div>
-        {% else %}
+        {% endif %}
         <div class="card-columns-vertical">
           {% for course in teaching_courses %}
           <div class="card mt-2">
@@ -245,7 +245,6 @@
           </div>
           {% endfor %}
         </div>
-        {% endif %}
       </div>
 
     </body>
