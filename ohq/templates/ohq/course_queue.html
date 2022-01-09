@@ -321,24 +321,30 @@
                     </div>
                   </div> 
                 {% else %}
-                  <h4>You are now invited to join the office hour. You can ask question now.</h4>
-                  {% if link %}
-                    <div class="alert alert-success" role="alert">
-                      You can join the Zoom meeting here: 
-                      <a href={{ link }}>{{ link }}</a>
+                  <div class="mx-auto">
+                    <div class="container-fluid p-3 border bg-light">
+                      <div id="queue_status">
+                        <h4>You are now invited to join the office hour. You can ask question now.</h4>
+                        {% if link %}
+                          <div class="alert alert-success" role="alert">
+                            You can join the Zoom meeting here: 
+                            <a href={{ link }}>{{ link }}</a>
+                          </div>
+                        {% endif %}
+                        <form action="{{ course.pk }}/join_queue" method="post">
+                          {% csrf_token %}
+                          <label for="student_question">Write down your question(s):</label>
+                          <textarea name="student_question" id="student_question" 
+                            class="form-control" rows="2" placeholder="E.g. how many stars in the universe?">{{student_question}}
+                          </textarea>
+                          <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
+                          <button type="submit" formaction="{{ course.pk }}/quit_queue" 
+                            class="btn btn-danger mt-2">Quit Queue</button>
+                          <button type="button" id="refresh_queue" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
+                        </form>
+                      </div>
                     </div>
-                  {% endif %}
-                  <form action="{{ course.pk }}/join_queue" method="post">
-                    {% csrf_token %}
-                    <label for="student_question">Write down your question(s):</label>
-                    <textarea name="student_question" id="student_question" 
-                      class="form-control" rows="2" placeholder="E.g. how many stars in the universe?">{{student_question}}
-                    </textarea>
-                    <button type="submit" class="btn btn-primary mt-2">Modify Question</button>
-                    <button type="submit" formaction="{{ course.pk }}/quit_queue" 
-                      class="btn btn-danger mt-2">Quit Queue</button>
-                    <button type="button" id="refresh_queue" class="btn btn-primary mt-2" onclick="loadQueueStatus()">Refresh</button>
-                  </form>
+                  </div>
                 {% endif %}
               {% else %}
               <!-- show join queue views -->
