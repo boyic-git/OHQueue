@@ -285,6 +285,7 @@ def signup_request(request):
     context["username"] = ""
     context["first_name"] = ""
     context["last_name"] = ""
+    context["preferred_name"] = ""
     if request.method == "POST":
         username = request.POST["user[username]"]
         password = request.POST["user[password]"]
@@ -292,11 +293,13 @@ def signup_request(request):
         email = request.POST["user[email]"]
         first_name = request.POST["user[first_name]"]
         last_name = request.POST["user[last_name]"]
+        preferred_name = request.POST["user[preferred_name]"]
 
         context["email"] = email
         context["username"] = username
         context["first_name"] = first_name
         context["last_name"] = last_name
+        context["preferred_name"] = preferred_name
 
         # check if username is taken
         is_exist = False
@@ -314,7 +317,7 @@ def signup_request(request):
                 context["message"] = "Passwords do not match!"
                 return render(request, "ohq/signup.html", context)
             user = User.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name, password=password)
-            student = Student.objects.create(user=user)
+            student = Student.objects.create(user=user, preferred_name=preferred_name)
 
         user = authenticate(username=username, password=password)
         if user is not None:

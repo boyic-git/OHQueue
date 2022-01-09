@@ -63,6 +63,10 @@
           <input id="first_name" class="form-control" type="text"
             placeholder="First Name" value="{{ first_name }}"
             name="user[first_name]" required> <!--Style input with .form-control class -->
+          <label class="mt-2" for="preferred_name"><b>Preferred Name</b></label>
+          <input id="preferred_name" class="form-control" type="text"
+            placeholder="Preferred Name, default as your first name" value="{{ preferred_name }}"
+            name="user[preferred_name]"> <!--Style input with .form-control class -->
           <label class="mt-2" for="last_name"><b>Last Name*</b></label>
           <input id="last_name" class="form-control" type="text"
             placeholder="Last Name" value="{{ last_name }}"

@@ -53,7 +53,8 @@ class Student(models.Model):
     starred_course = models.ManyToManyField(Course, blank=True)
 
     def save(self, *args, **kwargs):
-        self.preferred_name = self.user.first_name
+        if not self.preferred_name:
+            self.preferred_name = self.user.first_name
         super().save(*args, **kwargs)
 
     def __str__(self):
