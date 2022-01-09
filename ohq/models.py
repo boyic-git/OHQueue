@@ -49,7 +49,12 @@ class Course(models.Model):
 # Student
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    preferred_name = models.CharField(max_length=200, default="")
     starred_course = models.ManyToManyField(Course, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.preferred_name = self.user.first_name
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.user.first_name + " " + self.user.last_name

@@ -369,7 +369,7 @@ def change_preferred_name(request):
             context["name_message"] = "Preferred name is set same as your first name."
             return render(request, "ohq/manage_account.html", context)
         else:
-            request.user.preferred_name = preferred_name
+            request.user.student.preferred_name = preferred_name
             request.user.save()
             context["success_name_message"] = "New preferred name is set."
             return render(request, "ohq/manage_account.html", context)

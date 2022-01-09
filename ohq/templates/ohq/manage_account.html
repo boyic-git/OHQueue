@@ -47,7 +47,7 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ user.username }}
+                {{ user.student.preferred_name }}({{ user.username }})
               </a>
               <ul class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="navbarDropdown">
@@ -100,10 +100,11 @@
           {% csrf_token %}
           <div class="container">
             <h3>Change Preferred Name</h3>
+            <h4>Your current preferred name is: {{ user.student.preferred_name }}</h4>
             <div class="form-group">
               <label class="mt-2" for="new_preferred_name"><b>New Preferred Name</b></label>
               <input id="new_preferred_name" class="form-control" type="text"
-                placeholder="Preferred Name" name="user[preferred_name]">
+                placeholder="Default is your first name" name="user[preferred_name]">
             </div>
             {% if name_message %}
             <div class="alert alert-warning mt-2"> <!--Style the message paragraph with .alert and .alert-warning class -->
