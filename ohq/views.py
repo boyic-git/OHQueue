@@ -461,6 +461,7 @@ def next_student(request, pk):
 def put_back(request, pk):
     if not request.user.id:
         return redirect("ohq:login")
+    request.session.set_expiry(request.session.get_expiry_age())
     context = {}
     if request.method == "POST":
         course = get_object_or_404(Course, pk=pk)
@@ -506,8 +507,7 @@ def star_course(request, pk):
     else:
         return redirect("ohq:index")
 
-## TODO: look here
-## NOTE: test the ajax view in a test page
+
 def refresh_queue_view(request, pk):
     def get_queue(course):
         result = []
