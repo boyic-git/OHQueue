@@ -45,7 +45,9 @@
         courseSocket.onmessage = function(e) {
           const data = JSON.parse(e.data);
           console.log(data);
+          {% if not is_instructor %}
           loadQueueStatus();
+          {% endif %}
         };
 
         courseSocket.onclose = function(e) {
@@ -59,31 +61,31 @@
         };
 
         {% if is_instructor %}
-          document.querySelector('#next-student').onclick = function(e) {
-            refreshMessage();
-          };
+        document.querySelector('#next-student').onclick = function(e) {
+          refreshMessage();
+        };
 
-          document.querySelector('#put-back').onclick = function(e) {
-            refreshMessage();
-          };
+        document.querySelector('#put-back').onclick = function(e) {
+          refreshMessage();
+        };
 
-          document.querySelector('#invite').onclick = function(e) {
-            refreshMessage();
-          };
+        document.querySelector('#invite').onclick = function(e) {
+          refreshMessage();
+        };
 
-          document.querySelector('#clear-queue').onclick = function(e) {
-            refreshMessage();
-          };
+        document.querySelector('#clear-queue').onclick = function(e) {
+          refreshMessage();
+        };
         {% else %}
-          {% if is_joined %}
-            document.querySelector('#modify-question').onclick = function(e) {
-              refreshMessage();
-            };
-          {% else %}
-            document.querySelector('#join').onclick = function(e) {
-              refreshMessage();
-            };
-          {% endif %}
+        {% if is_joined %}
+        document.querySelector('#modify-question').onclick = function(e) {
+          refreshMessage();
+        };
+        {% else %}
+        document.querySelector('#join').onclick = function(e) {
+          refreshMessage();
+        };
+        {% endif %}
         {% endif %}
 
         function loadQueueStatus() {
